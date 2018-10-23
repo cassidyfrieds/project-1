@@ -1,16 +1,19 @@
+#ifndef PROJECT_1_ROOM_H
+#define PROJECT_1_ROOM_H
+
 #include <iostream>
 #include <string>
 #include <stdio.h>
 #include <vector> 
 
-#include "rapidxml.hpp"
 #include "Trigger.h"
 
 using namespace std;
-using namespace rapidxml;
 
-class Room{ //type is assumed to be 'regular' unless otherwise specified 
+class Room { //type is assumed to be 'regular' unless otherwise specified
     public:
+        Room();
+
         string name;
         string status;
         string descrip;
@@ -22,4 +25,6 @@ class Room{ //type is assumed to be 'regular' unless otherwise specified
 
 //NEED: border[] - direction
 
-}
+};
+
+#endif

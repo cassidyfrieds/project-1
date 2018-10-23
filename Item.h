@@ -3,11 +3,9 @@
 #include <stdio.h>
 #include <vector> 
 
-#include "rapidxml.hpp"
 #include "Trigger.h"
 
 using namespace std;
-using namespace rapidxml;
 
 //Turnon struct? GITHUB example has it but we cant make it too similar!!!
 
@@ -23,4 +21,4 @@ class Item{
         vector <Trigger> triggers;
     
 
-}
+};
