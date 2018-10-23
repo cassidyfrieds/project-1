@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>
-#include <vector> 
+#include <vector>
 
 #include "rapidxml.hpp"
 #include "Trigger.h"
@@ -13,7 +13,7 @@ class Container{
     public:
         Container(xml_node<> * node);
 
-        string name;
+        string name; // added comments
         string status;
         string descrip;
         vector <string> accepts;
