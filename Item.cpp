@@ -8,8 +8,7 @@ Item::Item(){
     writing="";
     status="";
     turnon.print="";
-    //turnon.actions[0]={""}; //{0}
-    //turnon.actions = NULL;
+    turnon.action = "";
 }   
 
 Item::~Item(){
@@ -20,4 +19,7 @@ void Item::printItem() const {
     cout << "Item description is: " << descrip << endl;
     cout << "Item writing is: " << writing << endl;
     cout << "Item status is: " << status << endl;
+    cout << "Item turnon print is: " << turnon.print << endl;
+    cout << "Item turnon action is: " << turnon.action << endl;
+    cout << "\n" << endl;
 };

@@ -13,7 +13,7 @@ using namespace std;
 
 struct TurnOn{
     string print;
-    vector <string> actions;
+    string action;
 };
 
 class Item{
