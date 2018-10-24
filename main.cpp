@@ -5,9 +5,11 @@
 #include "Trigger.h"
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <stdio.h>
-#include <vector> 
+#include <vector>
+#include <map>
 
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
@@ -19,5 +21,7 @@ using namespace rapidxml;
 
 int main(int argc, char* argv[] ){
 
-    
+    xml_document<>doc;
+    xml_node<> * root_node;
+
 };
