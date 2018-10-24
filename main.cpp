@@ -58,14 +58,13 @@ int main(int argc, char* argv[] ){
             temp.descrip = item_node->first_node("description")->value();
         }
         if(item_node->first_node("turnon")) {
-            if(item_node->first_node("print")) {
-                temp.turnon.print = item_node->first_node("print")->value();
+            if(item_node->first_node("turnon")->first_node("print")) {
+                temp.turnon.print = item_node->first_node("turnon")->first_node("print")->value();
             }
-            if(item_node->first_node("action")) {
-                temp.turnon.print = item_node->first_node("action")->value();
+            if(item_node->first_node("turnon")->first_node("action")) {
+                temp.turnon.action = item_node->first_node("turnon")->first_node("action")->value();
             }
         }
-    //turnon.actions[0]={""}; //{0}
         temp.printItem();
     }
 

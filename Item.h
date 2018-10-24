@@ -7,10 +7,6 @@
 
 using namespace std;
 
-//so i got this from that guy's github but i have no idea
-//how we're going to execute the actions if we're
-//reading them in as strings
-
 struct TurnOn{
     string print;
     string action;
