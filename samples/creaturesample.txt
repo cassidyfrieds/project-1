@@ -1,0 +1,25 @@
+i
+n
+attack dragon with axe
+s
+take axe
+n
+n
+open bottle
+take note
+put axe in bottle
+s
+attack giant with axe
+attack giant with note
+take sword
+attack dragon with sword
+drop sword
+n
+n
+take axe
+s
+drop axe
+attack giant with axe
+take axe
+attack dragon with axe
+attack giant with axe

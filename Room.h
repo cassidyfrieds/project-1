@@ -7,8 +7,16 @@
 #include <vector> 
 
 #include "Trigger.h"
+#include "Creature.h"
+#include "Container.h"
+//#include "Item.h"
 
 using namespace std;
+
+struct Border{
+    string direction;
+    string name;
+};
 
 class Room { //type is assumed to be 'regular' unless otherwise specified
     public:
@@ -18,9 +26,10 @@ class Room { //type is assumed to be 'regular' unless otherwise specified
         string status;
         string descrip;
         string type;
-        vector <string> containers; //or <Containter>?
-        vector <string> items;
-        vector <string> creatures;
+        vector <Border> borders;
+        vector <Container> containers; //or <Containter>?
+        vector <Item> items;
+        vector <Creature> creatures;
         vector <Trigger> triggers;
 
 //NEED: border[] - direction

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<map>
+  <room>
+    <name>Entrance</name>
+    <description>Room - Entrance</description>
+    <border>
+      <direction>north</direction>
+      <name>Main</name>
+    </border>
+    <item>axe</item>
+  </room>
+  <room>
+    <name>Main</name>
+    <creature>dragon</creature>
+    <item>sword</item>
+    <description>Room - Main</description>
+    <border>
+      <direction>south</direction>
+      <name>Entrance</name>
+    </border>
+    <border>
+      <direction>north</direction>
+      <name>Staircase</name>
+    </border>
+    <container>container</container>
+  </room>
+  <room>
+    <type>exit</type>
+    <name>Staircase</name>
+    <description>Room - Staircase (exit)</description>
+    <border>
+      <name>Main</name>
+      <direction>south</direction>
+    </border>
+    <container>bottle</container>
+    <creature>giant</creature>
+  </room>
+  <item>
+    <name>sword</name>
+  </item>
+  <item>
+    <name>note</name>
+    <writing>You found the exit :-)</writing>
+  </item>
+  <item>
+    <name>axe</name>
+  </item>
+  <container>
+    <name>bottle</name>
+    <item>note</item>
+  </container>
+  <container>
+    <name>container</name>
+  </container>
+  <creature>
+    <name>dragon</name>
+    <vulnerability>axe</vulnerability>
+    <trigger>
+      <type>single</type>
+      <command>attack dragon with axe</command>
+      <condition>
+        <object>axe</object>
+        <status>sharp</status>
+      </condition>
+      <action>take axe</action>
+      <action>attack dragon with axe</action>
+      <print>the axe is quite sharp</print>
+      <action>Game Over</action>
+    </trigger>
+  </creature>
+  <creature>
+    <name>giant</name>
+    <trigger>
+      <condition>
+        <has>yes</has>
+        <object>note</object>
+        <owner>inventory</owner>
+      </condition>
+      <print>axe got sharper</print>
+      <action>Update axe to sharp</action>
+    </trigger>
+  </creature>
+</map>

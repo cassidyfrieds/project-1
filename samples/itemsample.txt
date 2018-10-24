@@ -1,0 +1,10 @@
+i
+turn on shovel
+take shovel
+read shovel
+i
+n
+turn on shovel
+take shovel
+n
+open exit

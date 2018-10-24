@@ -7,7 +7,14 @@
 
 using namespace std;
 
-//Turnon struct? GITHUB example has it but we cant make it too similar!!!
+//so i got this from that guy's github but i have no idea
+//how we're going to execute the actions if we're
+//reading them in as strings
+
+struct TurnOn{
+    string print;
+    vector <string> actions;
+};
 
 class Item{
     public:
@@ -17,8 +24,10 @@ class Item{
         string status;
         string descrip; //description
         string writing;
-        bool turnon; // ? action elements in turnon are executed if conditions are met
-        vector <Trigger> triggers;
-    
+        TurnOn turnon;
+        //vector <Trigger> triggers;
 
+        Item();
+        ~Item();
+        void printItem() const;
 };

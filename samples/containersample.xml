@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<map>
+  <room>
+    <container>closet</container>
+    <name>Entrance</name>
+    <description>Room - Entrance</description>
+    <border>
+      <direction>north</direction>
+      <name>Main</name>
+    </border>
+  </room>
+  <room>
+    <name>Main</name>
+    <description>Room - Main</description>
+    <border>
+      <direction>south</direction>
+      <name>Entrance</name>
+    </border>
+    <border>
+      <direction>north</direction>
+      <name>Staircase</name>
+    </border>
+  </room>
+  <room>
+    <type>exit</type>
+    <name>Staircase</name>
+    <container>container</container>
+    <description>Room - Staircase (exit)</description>
+    <border>
+      <name>Main</name>
+      <direction>south</direction>
+    </border>
+    <container>bottle</container>
+  </room>
+  <item>
+    <name>sword</name>
+  </item>
+  <item>
+    <name>note</name>
+    <writing>You found the exit :-)</writing>
+  </item>
+  <container>
+    <name>closet</name>
+    <item>sword</item>
+  </container>
+  <container>
+    <name>bottle</name>
+    <item>note</item>
+  </container>
+  <container>
+    <accept>sword</accept>
+    <name>container</name>
+  </container>
+  <container>
+    <name>unused</name>
+  </container>
+</map>
