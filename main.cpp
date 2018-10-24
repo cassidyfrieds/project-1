@@ -1,4 +1,4 @@
-//#include "Item.h"
+#include "Item.h"
 #include "Container.h"
 #include "Room.h"
 #include "Creature.h"
@@ -62,10 +62,68 @@ int main(int argc, char* argv[] ){
                 temp.turnon.action = item_node->first_node("turnon")->first_node("action")->value();
             }
         }
-        //temp.printItem();
+        temp.printItem();
         allItems[temp.name] = temp;
     }
-
+    //creatures
+    map<std::string, Creature> allCreatures;
+    for(xml_node<> * creature_node = root_node->first_node("creature"); creature_node; creature_node = creature_node->next_sibling("creature")) {
+        Creature temp;
+        if(creature_node->first_node("name")) {
+            temp.name = creature_node->first_node("name")->value();
+        }
+        if(creature_node->first_node("status")) {
+            temp.status = creature_node->first_node("status")->value();
+        }
+        if(creature_node->first_node("description")) {
+            temp.descrip = creature_node->first_node("description")->value();
+        }
+        if(creature_node->first_node("attack")) {
+            temp.attack = creature_node->first_node("attack")->value();
+        }
+        if(creature_node->first_node("vulnerability")) {
+            temp.vulner.push_back(creature_node->first_node("vulnerability")->value());
+        }
+        if(creature_node->first_node("trigger")) {
+            temp.triggers.push_back(creature_node->first_node("trigger")->value());
+        } 
+        temp.printCreature();
+        allCreatures[temp.name] = temp;
+    }
+    //rooms
+    int borderCount = 0; //counter for number of borders to push name and directions
+    //int bDirCount = 0;
+    map<std::string, Room> allRooms;
+    for(xml_node<> * room_node = root_node->first_node("room"); room_node; room_node = room_node->next_sibling("room")) {
+        Room temp;
+        if(room_node->first_node("name")) {
+            temp.name = room_node->first_node("name")->value();
+        }
+        if(room_node->first_node("status")) {
+            temp.status = room_node->first_node("status")->value();
+        }
+        if(room_node->first_node("description")) {
+            temp.descrip = room_node->first_node("description")->value();
+        }
+        if(room_node->first_node("type")) {
+            temp.type = room_node->first_node("type")->value();
+        }
+        /*
+        if(room_node->first_node("border")) { //THIS SHIZ IS FUNKY
+            temp.borders.push_back(Border());
+            
+            if(room_node->first_node("border")->first_node("name")) {
+                temp.borders[borderCount].name = (room_node->first_node("border")->first_node("name")->value());
+                //(temp.borders.name).push_back(room_node->first_node("border")->first_node("name")->value()); //might not be indexing right??
+            }
+            if(room_node->first_node("border")->first_node("direction")) {
+                //(temp.borders.direction).push_back(room_node->first_node("border")->first_node("direction")->value());//might not be indexing right??
+            }
+            borderCount++;
+        } */
+        temp.printRoom();
+        allRooms[temp.name] = temp;
+    }
     // Parse Containers
     /*
     map<std::string, Container> allContainers;

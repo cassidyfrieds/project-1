@@ -11,8 +11,7 @@ Item::Item(){
     turnon.action = "";
 }   
 
-Item::~Item(){
-}
+Item::~Item(){}
 
 void Item::printItem() const {
     cout << "Item name is: " << name << endl;

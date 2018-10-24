@@ -18,15 +18,18 @@ class Trigger {
         //the actions preformed by triggers can act on any obj in game!!!
     public:
     struct Condition {
-        Item::Item obj; //object
+        string obj; //object
         string owner;
-        string has;
+        bool has; //cass changed this
         string status;
     };
     string type;
     vector <string> commands;
     vector <Condition> conditions;
     bool triggered;
+    Trigger();
+    ~Trigger();
+
 };
 
 #endif
