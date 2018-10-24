@@ -8,8 +8,9 @@ Item::Item(){
     writing="";
     status="";
     turnon.print="";
-    turnon.actions={0};
-}
+    //turnon.actions[0]={""}; //{0}
+    //turnon.actions = NULL;
+}   
 
 Item::~Item(){
 }
