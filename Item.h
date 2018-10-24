@@ -1,3 +1,7 @@
+//#ifndef PROJECT_1_ITEM_H
+//#define PROJECT_1_ITEM_H
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <stdio.h>
@@ -27,3 +31,5 @@ class Item{
         ~Item();
         void printItem() const;
 };
+
+//#endif

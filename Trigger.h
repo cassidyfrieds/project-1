@@ -6,18 +6,9 @@
 #include <stdio.h>
 #include <vector> 
 
+#include "Item.h"
+
 using namespace std;
-
-//ayushi i am still v confused by triggers so sorry this is a mess VVV
-
-/*
-struct Conditions{ //from github!!!
-    string obj; //object
-    string owner;
-    string has;
-    string status;
-};
-*/
 
 //command struct too? bc it says conditions of "type command"
 class Trigger {
@@ -25,8 +16,16 @@ class Trigger {
     //like inventory, present room
     //and any items, containers, creaturesm and items in containers in present room 
         //the actions preformed by triggers can act on any obj in game!!!
+    public:
+    struct Condition {
+        Item::Item obj; //object
+        string owner;
+        string has;
+        string status;
+    };
+    string type;
     vector <string> commands;
-    //vector <Conditions> conditions;
+    vector <Condition> conditions;
     bool triggered;
 };
 
