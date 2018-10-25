@@ -12,7 +12,6 @@ using namespace std;
 
 class Container {
     public:
-
         string name;
         string status;
         string descrip;
