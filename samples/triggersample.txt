@@ -1,0 +1,13 @@
+n
+attack dragon with axe
+s
+take axe
+n
+attack dragon with axe
+n
+open bottle
+take note
+s
+s
+n
+attack dragon with axe
