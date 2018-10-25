@@ -21,24 +21,26 @@ using namespace rapidxml;
 
 int main(int argc, char* argv[] ){
 
+    /*
+        Read the file
+    */
 	xml_document<> doc;
 	xml_node<> * root_node;
-	// Read the xml file into a vector
-	ifstream theFile (argv[1]);
+	ifstream theFile (argv[1]);         // Read the xml file into a vector
 	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
+    buffer.push_back('\0');
     theFile.close();
 
-	buffer.push_back('\0');
-	// Parse the buffer using the xml file parsing library into doc 
-	doc.parse<0>(&buffer[0]);
-	// Find our map node
-	root_node = doc.first_node("map");
+	doc.parse<0>(&buffer[0]); 	        // Parse the buffer using the xml file parsing library into doc 
+	root_node = doc.first_node("map");  // Find our map node
     if (root_node == NULL){
         cout << "cant get root node" << endl;
         return 0;
     }
 
-    // Parse Items
+    /*
+        Parse Items
+    */    
     map<std::string, Item> allItems;
     for(xml_node<> * item_node = root_node->first_node("item"); item_node; item_node = item_node->next_sibling("item")) {
         Item temp;
@@ -65,7 +67,10 @@ int main(int argc, char* argv[] ){
         temp.printItem();
         allItems[temp.name] = temp;
     }
-    //creatures
+
+    /*
+        Parse creatures
+    */
     map<std::string, Creature> allCreatures;
     for(xml_node<> * creature_node = root_node->first_node("creature"); creature_node; creature_node = creature_node->next_sibling("creature")) {
         Creature temp;
@@ -112,7 +117,10 @@ int main(int argc, char* argv[] ){
         temp.printCreature();
         allCreatures[temp.name] = temp;
     }
-    //rooms
+    
+    /*
+        Parse rooms
+    */
     int borderCount = 0; //counter for number of borders to push name and directions
     //int bDirCount = 0;
     map<std::string, Room> allRooms;
@@ -146,7 +154,10 @@ int main(int argc, char* argv[] ){
         temp.printRoom();
         allRooms[temp.name] = temp;
     }
-    // Parse Containers
+
+    /*
+        Parse containers
+    */    
     /*
     map<std::string, Container> allContainers;
     for(xml_node<> * container_node = root_node->first_node("container"); container_node; container_node = container_node->next_sibling("container")) {
