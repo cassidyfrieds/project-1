@@ -78,11 +78,33 @@ int main(int argc, char* argv[] ){
         if(creature_node->first_node("description")) {
             temp.descrip = creature_node->first_node("description")->value();
         }
-        if(creature_node->first_node("attack")) {
-            temp.attack = creature_node->first_node("attack")->value();
+        xml_node<> * attack_node = creature_node->first_node("attack");
+        if(attack_node) {
+            xml_node<> * condition_node = attack_node->first_node("condition");
+            if(condition_node) {
+                if(condition_node->first_node("has")) {
+                    temp.attack.condition.has = condition_node->first_node("has")->value();
+                }
+                if(condition_node->first_node("object")) {
+                    temp.attack.condition.obj = condition_node->first_node("object")->value();
+                }
+                if(condition_node->first_node("status")) {
+                    temp.attack.condition.status = condition_node->first_node("status")->value();
+                }
+                if(condition_node->first_node("owner")) {
+                    temp.attack.condition.owner = condition_node->first_node("owner")->value();
+                }
+            }
+            if(attack_node->first_node("print")) {
+                temp.attack.print = attack_node->first_node("print")->value();
+            }
+            for(xml_node<> * action_node = attack_node->first_node("action"); action_node; action_node = action_node->next_sibling("action")) {
+                temp.attack.actions.push_back(action_node->value());
+            }
         }
-        if(creature_node->first_node("vulnerability")) {
-            temp.vulner.push_back(creature_node->first_node("vulnerability")->value());
+        // Arrays
+        for(xml_node<> * vuln_node = creature_node->first_node("vulnerability"); vuln_node; vuln_node = vuln_node->next_sibling("vulnerability")) {
+            temp.vulner.push_back(vuln_node->value());
         }
         if(creature_node->first_node("trigger")) {
             temp.triggers.push_back(creature_node->first_node("trigger")->value());

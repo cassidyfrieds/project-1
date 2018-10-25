@@ -7,6 +7,7 @@
 #include <vector> 
 
 #include "Item.h"
+#include "Condition.h"
 
 using namespace std;
 
@@ -17,19 +18,12 @@ class Trigger {
     //and any items, containers, creaturesm and items in containers in present room 
         //the actions preformed by triggers can act on any obj in game!!!
     public:
-    struct Condition {
-        string obj; //object
-        string owner;
-        bool has; //cass changed this
-        string status;
-    };
-    string type;
-    vector <string> commands;
-    vector <Condition> conditions;
-    bool triggered;
-    Trigger();
-    ~Trigger();
-
+        string type;
+        vector <string> commands;
+        vector <Condition> conditions;
+        bool triggered;
+        Trigger();
+        ~Trigger();
 };
 
 #endif
