@@ -19,11 +19,13 @@ class Trigger {
         //the actions preformed by triggers can act on any obj in game!!!
     public:
         string type;
+        string print;
         vector <string> commands;
         vector <Condition> conditions;
         bool triggered;
         Trigger();
         ~Trigger();
+        void printTrigger() const;
 };
 
 #endif

@@ -11,7 +11,7 @@
 
 using namespace std;
 
-class Container{
+class Container {
     public:
 
         string name;
@@ -20,6 +20,10 @@ class Container{
         vector <string> accepts; // compare string to items name before putting in??
         vector <Item> items;
         vector <Trigger> triggers; //vector of triggers
+
+        Container();
+        ~Container();
+        void printContainer() const;
 
 };
 

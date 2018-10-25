@@ -111,9 +111,39 @@ int main(int argc, char* argv[] ){
         for(xml_node<> * vuln_node = creature_node->first_node("vulnerability"); vuln_node; vuln_node = vuln_node->next_sibling("vulnerability")) {
             temp.vulner.push_back(vuln_node->value());
         }
-        if(creature_node->first_node("trigger")) {
-            temp.triggers.push_back(creature_node->first_node("trigger")->value());
-        } 
+        for(xml_node<> * trigger_node = creature_node->first_node("trigger"); trigger_node; trigger_node = trigger_node->next_sibling("trigger")) {
+            Trigger tempTrigger;
+            //string type;
+            if(trigger_node->first_node("type")) {
+                tempTrigger.type = trigger_node->first_node("type")->value();
+            }
+            //string print
+            if(trigger_node->first_node("print")) {
+                tempTrigger.print = trigger_node->first_node("print")->value();
+            }
+            //vector <string> commands;
+            for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
+                tempTrigger.commands.push_back(command_node->value());
+            }
+            //vector <Condition> conditions;
+            for(xml_node<> * condition_node = trigger_node->first_node("condition"); condition_node; condition_node = condition_node->next_sibling("condition")) {
+                Condition tempCondition;
+                if(condition_node->first_node("has")) {
+                    tempCondition.has = condition_node->first_node("has")->value();
+                }
+                if(condition_node->first_node("object")) {
+                    tempCondition.obj = condition_node->first_node("object")->value();
+                }
+                if(condition_node->first_node("status")) {
+                    tempCondition.status = condition_node->first_node("status")->value();
+                }
+                if(condition_node->first_node("owner")) {
+                    tempCondition.owner = condition_node->first_node("owner")->value();
+                }
+                tempTrigger.conditions.push_back(tempCondition);
+            }
+            temp.triggers.push_back(tempTrigger);
+        }
         temp.printCreature();
         allCreatures[temp.name] = temp;
     }
@@ -121,6 +151,7 @@ int main(int argc, char* argv[] ){
     /*
         Parse rooms
     */
+   
     int borderCount = 0; //counter for number of borders to push name and directions
     //int bDirCount = 0;
     map<std::string, Room> allRooms;
@@ -157,8 +188,8 @@ int main(int argc, char* argv[] ){
 
     /*
         Parse containers
-    */    
-    /*
+    */   
+   /* 
     map<std::string, Container> allContainers;
     for(xml_node<> * container_node = root_node->first_node("container"); container_node; container_node = container_node->next_sibling("container")) {
         Container temp;
@@ -203,7 +234,7 @@ int main(int argc, char* argv[] ){
             temp.triggers.push_back(tempTrigger);
         }
 
-        //temp.printItem();
+        temp.printContainer();
         allContainers[temp.name] = temp;
     }
     */

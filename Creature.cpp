@@ -8,6 +8,7 @@ Creature::Creature(){
 
 Creature::~Creature(){
 }
+
 void Creature::printCreature() const {
     cout << "Creature name is: " << name << endl;
     cout << "Creature description is: " << descrip << endl;
@@ -23,6 +24,10 @@ void Creature::printCreature() const {
     cout << "Creature vulnerabilities are:" << endl;
     for(int i = 0; i < vulner.size(); i++) {
         cout << "\t* " << vulner[i] << endl;
+    }
+    cout << "Creature triggers are:" << endl;
+    for(int i = 0; i < triggers.size(); i++) {
+        triggers[i].printTrigger();
     }
     //cout << "Creature triggers is: "<< triggers << endl;
     cout << "\n" << endl;
