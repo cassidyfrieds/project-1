@@ -1,5 +1,3 @@
-//#ifndef PROJECT_1_ITEM_H
-//#define PROJECT_1_ITEM_H
 #pragma once
 
 #include <iostream>
@@ -11,25 +9,20 @@
 
 using namespace std;
 
-struct TurnOn{
-    string print;
-    string action;
-};
-
 class Item{
     public:
-       // Item(xml_node<> * node);
-
+        struct TurnOn {
+            string print;
+            string action;
+        };
         string name;
         string status;
         string descrip; //description
         string writing;
         TurnOn turnon;
-        //vector <Trigger> triggers;
+        vector <Trigger> triggers;
 
         Item();
         ~Item();
         void printItem() const;
 };
-
-//#endif

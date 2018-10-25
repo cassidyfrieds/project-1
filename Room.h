@@ -1,5 +1,4 @@
-#ifndef PROJECT_1_ROOM_H
-#define PROJECT_1_ROOM_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -37,5 +36,3 @@ class Room { //type is assumed to be 'regular' unless otherwise specified
 //NEED: border[] - direction
 
 };
-
-#endif

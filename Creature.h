@@ -1,5 +1,4 @@
-#ifndef PROJECT_1_CREATURE_H
-#define PROJECT_1_CREATURE_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -14,7 +13,7 @@ using namespace std;
 class Creature {
     public:
         struct Attack {
-            Condition condition;
+            vector<Condition> conditions;
             string print;
             vector<string> actions;
         };   
@@ -31,5 +30,3 @@ class Creature {
         ~Creature();
         void printCreature() const;
 };
-
-#endif

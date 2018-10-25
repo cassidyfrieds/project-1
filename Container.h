@@ -1,5 +1,4 @@
-#ifndef PROJECT_1_CONTAINER_H
-#define PROJECT_1_CONTAINER_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -26,5 +25,3 @@ class Container {
         void printContainer() const;
 
 };
-
-#endif

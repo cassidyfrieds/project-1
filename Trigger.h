@@ -1,12 +1,10 @@
-#ifndef PROJECT_1_TRIGGER_H
-#define PROJECT_1_TRIGGER_H
+#pragma once
 
 #include <iostream>
 #include <string>
 #include <stdio.h>
 #include <vector> 
 
-#include "Item.h"
 #include "Condition.h"
 
 using namespace std;
@@ -27,5 +25,3 @@ class Trigger {
         ~Trigger();
         void printTrigger() const;
 };
-
-#endif

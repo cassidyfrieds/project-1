@@ -1,9 +1,3 @@
-#include "Item.h"
-#include "Container.h"
-#include "Room.h"
-#include "Creature.h"
-#include "Trigger.h"
-
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -14,6 +8,12 @@
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "rapidxml-1.13/rapidxml_print.hpp"
+
+#include "Item.h"
+#include "Container.h"
+#include "Room.h"
+#include "Creature.h"
+#include "Trigger.h"
 
 using namespace std;
 using namespace rapidxml;
@@ -44,18 +44,23 @@ int main(int argc, char* argv[] ){
     map<std::string, Item> allItems;
     for(xml_node<> * item_node = root_node->first_node("item"); item_node; item_node = item_node->next_sibling("item")) {
         Item temp;
+        // string name
         if(item_node->first_node("name")) {
             temp.name = item_node->first_node("name")->value();
         }
+        // string writing
         if(item_node->first_node("writing")) {
             temp.writing = item_node->first_node("writing")->value();
         }
+        // string status
         if(item_node->first_node("status")) {
             temp.status = item_node->first_node("status")->value();
         }
+        // string description
         if(item_node->first_node("description")) {
             temp.descrip = item_node->first_node("description")->value();
         }
+        // TurnOn turnon
         if(item_node->first_node("turnon")) {
             if(item_node->first_node("turnon")->first_node("print")) {
                 temp.turnon.print = item_node->first_node("turnon")->first_node("print")->value();
@@ -63,6 +68,40 @@ int main(int argc, char* argv[] ){
             if(item_node->first_node("turnon")->first_node("action")) {
                 temp.turnon.action = item_node->first_node("turnon")->first_node("action")->value();
             }
+        }
+        // vector<Trigger> triggers
+        for(xml_node<> * trigger_node = item_node->first_node("trigger"); trigger_node; trigger_node = trigger_node->next_sibling("trigger")) {
+            Trigger tempTrigger;
+            //string trigger.type;
+            if(trigger_node->first_node("type")) {
+                tempTrigger.type = trigger_node->first_node("type")->value();
+            }
+            //string trigger.print
+            if(trigger_node->first_node("print")) {
+                tempTrigger.print = trigger_node->first_node("print")->value();
+            }
+            //vector <string> trigger.commands;
+            for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
+                tempTrigger.commands.push_back(command_node->value());
+            }
+            //vector <Condition> trigger.conditions;
+            for(xml_node<> * condition_node = trigger_node->first_node("condition"); condition_node; condition_node = condition_node->next_sibling("condition")) {
+                Condition tempCondition;
+                if(condition_node->first_node("has")) {
+                    tempCondition.has = condition_node->first_node("has")->value();
+                }
+                if(condition_node->first_node("object")) {
+                    tempCondition.obj = condition_node->first_node("object")->value();
+                }
+                if(condition_node->first_node("status")) {
+                    tempCondition.status = condition_node->first_node("status")->value();
+                }
+                if(condition_node->first_node("owner")) {
+                    tempCondition.owner = condition_node->first_node("owner")->value();
+                }
+                tempTrigger.conditions.push_back(tempCondition);
+            }
+            temp.triggers.push_back(tempTrigger);
         }
         temp.printItem();
         allItems[temp.name] = temp;
@@ -74,58 +113,67 @@ int main(int argc, char* argv[] ){
     map<std::string, Creature> allCreatures;
     for(xml_node<> * creature_node = root_node->first_node("creature"); creature_node; creature_node = creature_node->next_sibling("creature")) {
         Creature temp;
+        // string name
         if(creature_node->first_node("name")) {
             temp.name = creature_node->first_node("name")->value();
         }
+        // string status
         if(creature_node->first_node("status")) {
             temp.status = creature_node->first_node("status")->value();
         }
+        // string description
         if(creature_node->first_node("description")) {
             temp.descrip = creature_node->first_node("description")->value();
         }
         xml_node<> * attack_node = creature_node->first_node("attack");
+        // Attack attack
         if(attack_node) {
-            xml_node<> * condition_node = attack_node->first_node("condition");
-            if(condition_node) {
+            // vector<Condition> attack.conditions
+            for(xml_node<> * condition_node = attack_node->first_node("condition"); condition_node; condition_node = condition_node->next_sibling("condition")) {
+                Condition tempCondition;
                 if(condition_node->first_node("has")) {
-                    temp.attack.condition.has = condition_node->first_node("has")->value();
+                    tempCondition.has = condition_node->first_node("has")->value();
                 }
                 if(condition_node->first_node("object")) {
-                    temp.attack.condition.obj = condition_node->first_node("object")->value();
+                    tempCondition.obj = condition_node->first_node("object")->value();
                 }
                 if(condition_node->first_node("status")) {
-                    temp.attack.condition.status = condition_node->first_node("status")->value();
+                    tempCondition.status = condition_node->first_node("status")->value();
                 }
                 if(condition_node->first_node("owner")) {
-                    temp.attack.condition.owner = condition_node->first_node("owner")->value();
+                    tempCondition.owner = condition_node->first_node("owner")->value();
                 }
+                temp.attack.conditions.push_back(tempCondition);
             }
+            // string attack.print
             if(attack_node->first_node("print")) {
                 temp.attack.print = attack_node->first_node("print")->value();
             }
+            // vector<string> attack.actions
             for(xml_node<> * action_node = attack_node->first_node("action"); action_node; action_node = action_node->next_sibling("action")) {
                 temp.attack.actions.push_back(action_node->value());
             }
         }
-        // Arrays
+        // vector<String> vulner
         for(xml_node<> * vuln_node = creature_node->first_node("vulnerability"); vuln_node; vuln_node = vuln_node->next_sibling("vulnerability")) {
             temp.vulner.push_back(vuln_node->value());
         }
+        // vector<Trigger> triggers
         for(xml_node<> * trigger_node = creature_node->first_node("trigger"); trigger_node; trigger_node = trigger_node->next_sibling("trigger")) {
             Trigger tempTrigger;
-            //string type;
+            //string trigger.type;
             if(trigger_node->first_node("type")) {
                 tempTrigger.type = trigger_node->first_node("type")->value();
             }
-            //string print
+            //string trigger.print
             if(trigger_node->first_node("print")) {
                 tempTrigger.print = trigger_node->first_node("print")->value();
             }
-            //vector <string> commands;
+            //vector <string> trigger.commands;
             for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
                 tempTrigger.commands.push_back(command_node->value());
             }
-            //vector <Condition> conditions;
+            //vector <Condition> trigger.conditions;
             for(xml_node<> * condition_node = trigger_node->first_node("condition"); condition_node; condition_node = condition_node->next_sibling("condition")) {
                 Condition tempCondition;
                 if(condition_node->first_node("has")) {

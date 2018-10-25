@@ -14,8 +14,11 @@ void Creature::printCreature() const {
     cout << "Creature description is: " << descrip << endl;
     cout << "Creature status is: " << status << endl;
     cout << "Creature attack is: " << endl;
-        cout << "\t* conditon: ";
-        attack.condition.printCondition();
+        cout << "\t* conditons: " << endl;
+        for(int i = 0; i < attack.conditions.size(); i++) {
+            cout << "\t\t- ";
+            attack.conditions[i].printCondition();
+        }
         cout << "\t* print '" << attack.print.substr(0, 50) << "...'" << endl;
         cout << "\t* actions: " << endl;
         for(int i = 0; i < attack.actions.size(); i++) {
@@ -29,6 +32,5 @@ void Creature::printCreature() const {
     for(int i = 0; i < triggers.size(); i++) {
         triggers[i].printTrigger();
     }
-    //cout << "Creature triggers is: "<< triggers << endl;
     cout << "\n" << endl;
 };

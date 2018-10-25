@@ -1,5 +1,4 @@
-#ifndef PROJECT_1_CONDITION_H
-#define PROJECT_1_CONDITION_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -17,5 +16,3 @@ class Condition {
         ~Condition();
         void printCondition() const;
 };
-
-#endif

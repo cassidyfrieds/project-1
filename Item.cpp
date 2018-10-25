@@ -1,7 +1,5 @@
 #include "Item.h"
 
-using namespace std;
-
 Item::Item(){
     name="";
     descrip="";
@@ -20,5 +18,9 @@ void Item::printItem() const {
     cout << "Item status is: " << status << endl;
     cout << "Item turnon print is: " << turnon.print << endl;
     cout << "Item turnon action is: " << turnon.action << endl;
+    cout << "Item triggers are:" << endl;
+    for(int i = 0; i < triggers.size(); i++) {
+        triggers[i].printTrigger();
+    }
     cout << "\n" << endl;
 };
