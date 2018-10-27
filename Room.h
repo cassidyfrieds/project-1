@@ -33,6 +33,7 @@ class Room { //type is assumed to be 'regular' unless otherwise specified
         Room();
         ~Room();
         void printRoom() const;
+        void printRoomBorders() const;
 //NEED: border[] - direction
 
 };

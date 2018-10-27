@@ -197,43 +197,6 @@ int main(int argc, char* argv[] ){
     }
     
     /*
-        Parse rooms
-    */
-    int borderCount = 0; //counter for number of borders to push name and directions
-    //int bDirCount = 0;
-    map<std::string, Room> allRooms;
-    for(xml_node<> * room_node = root_node->first_node("room"); room_node; room_node = room_node->next_sibling("room")) {
-        Room temp;
-        if(room_node->first_node("name")) {
-            temp.name = room_node->first_node("name")->value();
-        }
-        if(room_node->first_node("status")) {
-            temp.status = room_node->first_node("status")->value();
-        }
-        if(room_node->first_node("description")) {
-            temp.descrip = room_node->first_node("description")->value();
-        }
-        if(room_node->first_node("type")) {
-            temp.type = room_node->first_node("type")->value();
-        }
-        /*
-        if(room_node->first_node("border")) { //THIS SHIZ IS FUNKY
-            temp.borders.push_back(Border());
-            
-            if(room_node->first_node("border")->first_node("name")) {
-                temp.borders[borderCount].name = (room_node->first_node("border")->first_node("name")->value());
-                //(temp.borders.name).push_back(room_node->first_node("border")->first_node("name")->value()); //might not be indexing right??
-            }
-            if(room_node->first_node("border")->first_node("direction")) {
-                //(temp.borders.direction).push_back(room_node->first_node("border")->first_node("direction")->value());//might not be indexing right??
-            }
-            borderCount++;
-        } */
-        temp.printRoom();
-        allRooms[temp.name] = temp;
-    }
-
-    /*
         Parse containers
     */   
     map<std::string, Container> allContainers;
@@ -299,4 +262,102 @@ int main(int argc, char* argv[] ){
         allContainers[temp.name] = temp;
     }
 
+    /*
+        Parse rooms
+    */
+    //nt borderCount = 0; //counter for number of borders to push name and directions
+    //int bDirCount = 0;
+    map<std::string, Room> allRooms;
+    for(xml_node<> * room_node = root_node->first_node("room"); room_node; room_node = room_node->next_sibling("room")) {
+        Room temp;
+        if(room_node->first_node("name")) {
+            temp.name = room_node->first_node("name")->value();
+        }
+        if(room_node->first_node("status")) {
+            temp.status = room_node->first_node("status")->value();
+        }
+        if(room_node->first_node("description")) {
+            temp.descrip = room_node->first_node("description")->value();
+        }
+        if(room_node->first_node("type")) {
+            temp.type = room_node->first_node("type")->value();
+        }
+
+        // vector <Item> items
+        for(xml_node<> * item_node = room_node->first_node("item"); item_node; item_node = item_node->next_sibling("item")) {
+            string itemName = item_node->value();
+            temp.items.push_back(allItems[itemName]);
+        }
+
+        // vector <Creature> creatures
+        for(xml_node<> * creature_node = room_node->first_node("creature"); creature_node; creature_node = creature_node->next_sibling("creature")) {
+            string creatureName = creature_node->value();
+            temp.creatures.push_back(allCreatures[creatureName]);
+        }
+
+        // vector <Container> containers
+        for(xml_node<> * container_node = room_node->first_node("container"); container_node; container_node = container_node->next_sibling("container")) {
+            string containerName = container_node->value();
+            temp.containers.push_back(allContainers[containerName]);
+        }
+
+         // vector <Border> borderss;   
+        for(xml_node<> * border_node = room_node->first_node("border"); border_node; border_node = border_node->next_sibling("border")) {
+            Border tempBorder;
+            //string border.direction
+            if(border_node->first_node("direction")) {
+                tempBorder.direction = border_node->first_node("direction")->value();
+            }
+            //string border.name
+            if(border_node->first_node("name")) {
+                tempBorder.name = border_node->first_node("name")->value();
+            }
+            temp.borders.push_back(tempBorder);
+        }
+
+
+        // vector <Trigger> triggers;   
+        for(xml_node<> * trigger_node = room_node->first_node("trigger"); trigger_node; trigger_node = trigger_node->next_sibling("trigger")) {
+            Trigger tempTrigger;
+            //string trigger.type;
+            if(trigger_node->first_node("type")) {
+                tempTrigger.type = trigger_node->first_node("type")->value();
+            }
+            //string trigger.print
+            if(trigger_node->first_node("print")) {
+                tempTrigger.print = trigger_node->first_node("print")->value();
+            }
+            //vector <string> trigger.commands;
+            for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
+                tempTrigger.commands.push_back(command_node->value());
+            }
+            temp.triggers.push_back(tempTrigger);
+        }
+           
+        temp.printRoom();
+        allRooms[temp.name] = temp;
+    }
+
+    /**
+    //reading in borders into room - you have to do it after you have all the rooms made first
+    for(xml_node<> * room_node = root_node->first_node("room"); room_node; room_node = room_node->next_sibling("room")) {
+        Border tempBorder;
+        string name;
+        if(room_node->first_node("name")) {
+            name = room_node->first_node("name")->value();
+        }
+        Room currRoom = allRooms[name];
+        for(xml_node<> * border_node = room_node->first_node("border"); border_node; border_node = border_node->next_sibling("border")) {
+            if(border_node->first_node("direction")) {
+                tempBorder.direction = border_node->first_node("direction")->value();
+            }
+           if(border_node->first_node("name")) {
+                tempBorder.room= allRooms[border_node->first_node("name")->value()];
+            }
+            currRoom.borders.push_back(tempBorder);
+        }
+
+        currRoom.printRoomBorders();
+    }
+    **/
 };
