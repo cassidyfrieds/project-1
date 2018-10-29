@@ -371,12 +371,15 @@ int main(int argc, char* argv[] ){
     }
     **/
 
-   //current room a refrence 
-   //Room currRoom
-   Room* currRoom = &allRooms["Staircase"];//["Entrance"];
-   currRoom->printRoom();
+
+    // Make current room
+    Room* currRoom = &allRooms["Entrance"];
+    //currRoom->printRoom();
 
     /* Start Reading Input */
+    Container temp;
+    allContainers["inventory"] = temp;
+
     while(true) {
         // Gather input string
         string input;
@@ -389,67 +392,122 @@ int main(int argc, char* argv[] ){
             //command[0] command[1]
 
         // Parse instructions
-        string key = commands[0];
-        if (key == "n" || key == "s" || key == "e" || key == "w") {
-            cout << "Direction" << endl;
-        }
-        else if (key == "i") {
-            cout << "Inventory:" << endl;
-        }
-        else if (key == "take" && commands.size() > 1) {
-            string itemName = commands[1];
-            cout << "Take " << itemName << endl;
-        }
-        else if (key == "open") { 
-            if(commands.size() > 1 && commands[1] == "exit") { //room has to be exit
-                // Open Exit 
-                cout << "Game Over" << endl;
-                break;
+        if(commands.size() > 0) {
+            string key = commands[0];
+            // Move on if no triggers found
+            if (key == "n" || key == "s" || key == "e" || key == "w") {
+                cout << "Direction" << endl;
             }
-            else { 
-                // Open CONTAINER
-                //need to make sure containername is in currentRoom containers and exists
-                bool foundContainer = false; //T if container is found in current room
-                for(int i = 0; i < currRoom->containers.size(); i++){
-                    if(currRoom->containers[i].name == commands[1]){
-                        foundContainer = true; //container is found within room
-                        Container* temp = &(currRoom->containers[i]);
-                        temp->open = true; //container was opened
-                        
-                        if(temp->items.empty()) { //container is empty
-                            cout << temp->name << " is empty. " << endl;
-                        }
-                        else{ //container contains items
-                            cout << temp->name << " contains ";
-                            cout << temp->items[0].name;
-                            for(int i = 1; i < temp->items.size(); i++){
-                                cout << ", " << temp->items[i].name;
-                            }
-                            cout << endl;
-                        }
-                        break;
-                    }
+            else if (key == "i") {
+                // Print all items in inventory
+                cout << "Inventory: ";
+                vector<Item> inventory = allContainers["inventory"].items;
+                if(inventory.size() == 0) {
+                    cout << "empty";
                 }
+                for(int i = 0; i < inventory.size(); i++) {
+                    cout << inventory[i].name;
+                    if(i < inventory.size() - 1) {
+                        cout << ",";
+                    } 
+                }
+                cout << endl;
+            else if (key == "take" && commands.size() > 1) {
+                string itemName = commands[1];
+                cout << "Take " << itemName << endl;
+            }
+            else if (key == "open") { 
+                if(commands.size() > 1 && commands[1] == "exit") { //room has to be exit
+                    // Open Exit 
+                    cout << "Game Over" << endl;
+                    break;
+                }
+                else { 
+                    // Open CONTAINER
+                    //need to make sure containername is in currentRoom containers and exists
+                    bool foundContainer = false; //T if container is found in current room
+                    for(int i = 0; i < currRoom->containers.size(); i++){
+                        if(currRoom->containers[i].name == commands[1]){
+                            foundContainer = true; //container is found within room
+                            Container* temp = &(currRoom->containers[i]);
+                            temp->open = true; //container was opened
+
+                            if(temp->items.empty()) { //container is empty
+                                cout << temp->name << " is empty. " << endl;
+                            }
+                            else{ //container contains items
+                                cout << temp->name << " contains ";
+                                cout << temp->items[0].name;
+                                for(int i = 1; i < temp->items.size(); i++){
+                                    cout << ", " << temp->items[i].name;
+                                }
+                                cout << endl;
+                            }
+                            break;
+                        }
+                    }
 
                 if(!foundContainer){ //if container is not found
                     cout << "Container not found" << endl; //or print error
                 }
             }
-        }
-        else if (key == "read") {
+            else if (key == "take" && commands.size() > 1) {
+                // changes item ownership from room or container to inventory
+                /// TODO: check triggers
+                string itemName = commands[1];
+                bool found = false;
+                // Check if the item is in the room
+                for(int i = 0; i < currRoom->items.size(); i++) {
+                    if(currRoom->items[i].name == itemName) {
+                        allContainers["inventory"].items.push_back(currRoom->items.at(i));
+                        currRoom->items.erase(currRoom->items.begin() + i);
+                        found = true;
+                        break;
+                    }
+                }
+                // Check containers
+                for(int i = 0; !found && i < currRoom->containers.size(); i++) {
+                    Container c = currRoom->containers[i];
+                    if(c.open) {
+                        for(int j = 0; j < c.items.size(); j++) {
+                            if(c.items[j].name == itemName) {
+                                allContainers["inventory"].items.push_back(currRoom->containers[i].items.at(j));
+                                currRoom->items.erase(currRoom->items.begin() + i);
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if(found) {
+                    cout << "Item " << itemName << " added to inventory." << endl;
+                } else {
+                    cout << "Error" << endl;
+                }
+            }
+            else if (key == "open") {
+                if(commands.size() > 1 && commands[1] == "exit") {
+                    // Open Exit
+                }
+                else {
+                    // Open
+                }
+            }
+            else if (key == "read") {
 
-        }
-        else if (key == "drop") {
+            }
+            else if (key == "drop") {
 
-        }
-        else if (key == "put") {
+            }
+            else if (key == "put") {
 
-        }
-        else if (key == "turn" && commands.size() > 1 && commands[1] == "on") {
-            cout << "Turn on" << endl;
-        }
-        else {
-            cout << "Error" << endl;
+            }
+            else if (key == "turn" && commands.size() > 1 && commands[1] == "on") {
+                cout << "Turn on" << endl;
+            }
+            else {
+                cout << "Error" << endl;
+            }
         }
     }
 };
