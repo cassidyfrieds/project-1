@@ -18,6 +18,11 @@
 using namespace std;
 using namespace rapidxml;
 
+map<std::string, Item> allItems;
+map<std::string, Creature> allCreatures;
+map<std::string, Container> allContainers;
+ map<std::string, Room> allRooms;
+
 vector<string> splitString(const string& s, char delimiter)
 {
    vector<string> tokens;
@@ -28,6 +33,36 @@ vector<string> splitString(const string& s, char delimiter)
       tokens.push_back(token);
    }
    return tokens;
+}
+
+bool checkTriggerCondition(Trigger trig){
+    bool tempTrig = true;
+    for (int i=0; i<(trig.conditions.size()); i++){
+        if (trig.conditions[i].has){
+            Container owner = allContainers[trig.conditions[i].owner];
+            Item obj = allItems[trig.conditions[i].obj];
+            for(int x=0; x<(owner.items.size()); x++){
+                if (owner.items[x].name.compare(obj.name) == 0){
+                    tempTrig = false;
+                }
+            }
+        }
+        else{
+            Container obj1;
+            Item obj2;
+            if (allItems.find(trig.conditions[i].obj) == allItems.end()){
+                Container obj1 = allContainers[trig.conditions[i].obj];
+            }
+            else{
+                Item obj2 = allItems[trig.conditions[i].obj];
+            }
+
+            if (obj1.status.compare(trig.conditions[i].status) == 0 || obj2.status.compare(trig.conditions[i].status) == 0){
+                tempTrig = false;
+            }
+        }
+    }
+    return tempTrig;
 }
 
 int main(int argc, char* argv[] ){
@@ -42,7 +77,7 @@ int main(int argc, char* argv[] ){
     buffer.push_back('\0');
     theFile.close();
 
-	doc.parse<0>(&buffer[0]); 	        // Parse the buffer using the xml file parsing library into doc 
+	doc.parse<0>(&buffer[0]); 	        // Parse the buffer using the xml file parsing library into doc
 	root_node = doc.first_node("map");  // Find our map node
     if (root_node == NULL){
         cout << "cant get root node" << endl;
@@ -51,8 +86,7 @@ int main(int argc, char* argv[] ){
 
     /*
         Parse Items
-    */    
-    map<std::string, Item> allItems;
+    */
     for(xml_node<> * item_node = root_node->first_node("item"); item_node; item_node = item_node->next_sibling("item")) {
         Item temp;
         // string name
@@ -121,7 +155,6 @@ int main(int argc, char* argv[] ){
     /*
         Parse creatures
     */
-    map<std::string, Creature> allCreatures;
     for(xml_node<> * creature_node = root_node->first_node("creature"); creature_node; creature_node = creature_node->next_sibling("creature")) {
         Creature temp;
         // string name
@@ -206,11 +239,10 @@ int main(int argc, char* argv[] ){
         //temp.printCreature();
         allCreatures[temp.name] = temp;
     }
-    
+
     /*
         Parse containers
-    */   
-    map<std::string, Container> allContainers;
+    */
     for(xml_node<> * container_node = root_node->first_node("container"); container_node; container_node = container_node->next_sibling("container")) {
         Container temp;
         // string name
@@ -234,7 +266,7 @@ int main(int argc, char* argv[] ){
             string itemName = item_node->value();
             temp.items.push_back(allItems[itemName]);
         }
-        // vector <Trigger> triggers;   
+        // vector <Trigger> triggers;
         for(xml_node<> * trigger_node = container_node->first_node("trigger"); trigger_node; trigger_node = trigger_node->next_sibling("trigger")) {
             Trigger tempTrigger;
             //string trigger.type;
@@ -276,7 +308,6 @@ int main(int argc, char* argv[] ){
     /*
         Parse rooms
     */
-    map<std::string, Room> allRooms;
     for(xml_node<> * room_node = root_node->first_node("room"); room_node; room_node = room_node->next_sibling("room")) {
         Room temp;
         if(room_node->first_node("name")) {
@@ -310,7 +341,7 @@ int main(int argc, char* argv[] ){
             temp.containers.push_back(allContainers[containerName]);
         }
 
-         // vector <Border> borderss;   
+         // vector <Border> borderss;
         for(xml_node<> * border_node = room_node->first_node("border"); border_node; border_node = border_node->next_sibling("border")) {
             Border tempBorder;
             //string border.direction
@@ -325,7 +356,7 @@ int main(int argc, char* argv[] ){
         }
 
 
-        // vector <Trigger> triggers;   
+        // vector <Trigger> triggers;
         for(xml_node<> * trigger_node = room_node->first_node("trigger"); trigger_node; trigger_node = trigger_node->next_sibling("trigger")) {
             Trigger tempTrigger;
             //string trigger.type;
@@ -342,7 +373,7 @@ int main(int argc, char* argv[] ){
             }
             temp.triggers.push_back(tempTrigger);
         }
-           
+
         //temp.printRoom();
 
         allRooms[temp.name] = temp;
@@ -375,6 +406,7 @@ int main(int argc, char* argv[] ){
     // Make current room
     Room* currRoom = &allRooms["Entrance"];
     //currRoom->printRoom();
+    cout << currRoom->descrip <<endl;
 
     /* Start Reading Input */
     Container temp;
@@ -384,11 +416,11 @@ int main(int argc, char* argv[] ){
         // Gather input string
         string input;
         cout << "> ";
-        getline(cin, input);   
+        getline(cin, input);
 
         // Split string at spaces
         vector<string> commands = splitString(input, ' ');
-        //take torch 
+        //take torch
             //command[0] command[1]
 
         // Parse instructions
@@ -396,7 +428,63 @@ int main(int argc, char* argv[] ){
             string key = commands[0];
             // Move on if no triggers found
             if (key == "n" || key == "s" || key == "e" || key == "w") {
-                cout << "Direction" << endl;
+                //cout << "Direction" << endl;
+                //check if triggered
+                bool triggered = false;
+                for (int x=0; x<(currRoom->triggers.size()); x++){
+                    for (int y=0; y<(currRoom->triggers[x].commands.size()); y++){
+                        if (currRoom->triggers[x].commands[y].compare("n") == 0){
+                            triggered = checkTriggerCondition(currRoom->triggers[x]);
+                        }
+                        if (currRoom->triggers[x].commands[y].compare("s") == 0){
+                            triggered = checkTriggerCondition(currRoom->triggers[x]);
+                        }
+                        if (currRoom->triggers[x].commands[y].compare("e") == 0){
+                            triggered = checkTriggerCondition(currRoom->triggers[x]);
+                        }
+                        if (currRoom->triggers[x].commands[y].compare("w") == 0){
+                            triggered = checkTriggerCondition(currRoom->triggers[x]);
+                        }
+                    }
+                    if (triggered==true){
+                        cout << currRoom->triggers[x].print << endl;
+                    }
+                }
+                if (triggered == false){
+                    bool roomChange = false;
+                    for (int i=0; i<(currRoom->borders.size()); i++){
+                        if (key== "n" && (currRoom->borders[i].direction).compare("north")==0 ){
+                            Room* temp = &allRooms[currRoom->borders[i].name];
+                            currRoom = temp;
+                            roomChange = true;
+                            break;
+                        }
+                        if (key== "s" && (currRoom->borders[i].direction).compare("south")==0 ){
+                            Room* temp = &allRooms[currRoom->borders[i].name];
+                            currRoom = temp;
+                            roomChange = true;
+                            break;
+                        }
+                        if (key== "e" && (currRoom->borders[i].direction).compare("east")==0 ){
+                            Room* temp = &allRooms[currRoom->borders[i].name];
+                            currRoom = temp;
+                            roomChange = true;
+                            break;
+                        }
+                        if (key== "w" && (currRoom->borders[i].direction).compare("west")==0 ){
+                            Room* temp = &allRooms[currRoom->borders[i].name];
+                            currRoom = temp;
+                            roomChange = true;
+                            break;
+                        }
+                    }
+                    if (roomChange == true){
+                        cout << currRoom->descrip <<endl;
+                    }
+                    else{
+                        cout << "Can't go that way." << endl;
+                    }
+                }
             }
             else if (key == "i") {
                 // Print all items in inventory
@@ -409,7 +497,7 @@ int main(int argc, char* argv[] ){
                     cout << inventory[i].name;
                     if(i < inventory.size() - 1) {
                         cout << ",";
-                    } 
+                    }
                 }
                 cout << endl;
             }
@@ -447,13 +535,13 @@ int main(int argc, char* argv[] ){
                     cout << "Error" << endl;
                 }
             }
-            else if (key == "open") { 
+            else if (key == "open") {
                 if(commands.size() > 1 && commands[1] == "exit") { //room has to be exit
-                    // Open Exit 
+                    // Open Exit
                     cout << "Game Over" << endl;
                     break;
                 }
-                else { 
+                else {
                     // Open CONTAINER
                     //need to make sure containername is in currentRoom containers and exists
                     bool foundContainer = false; //T if container is found in current room
