@@ -412,6 +412,7 @@ int main(int argc, char* argv[] ){
             }
             else if (key == "take" && commands.size() > 1) {
                 // changes item ownership from room or container to inventory
+                /// TODO: check triggers
                 string itemName = commands[1];
                 bool found = false;
                 // Check if the item is in the room
