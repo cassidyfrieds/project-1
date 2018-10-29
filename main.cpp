@@ -376,7 +376,9 @@ int main(int argc, char* argv[] ){
     //currRoom->printRoom();
 
     /* Start Reading Input */
-    vector<Item> inventory;
+    Container temp;
+    allContainers["inventory"] = temp;
+
     while(true) {
         // Gather input string
         string input;
@@ -396,6 +398,7 @@ int main(int argc, char* argv[] ){
             else if (key == "i") {
                 // Print all items in inventory
                 cout << "Inventory: ";
+                vector<Item> inventory = allContainers["inventory"].items;
                 if(inventory.size() == 0) {
                     cout << "empty";
                 }
@@ -414,7 +417,7 @@ int main(int argc, char* argv[] ){
                 // Check if the item is in the room
                 for(int i = 0; i < currRoom->items.size(); i++) {
                     if(currRoom->items[i].name == itemName) {
-                        inventory.push_back(currRoom->items.at(i));
+                        allContainers["inventory"].items.push_back(currRoom->items.at(i));
                         currRoom->items.erase(currRoom->items.begin() + i);
                         found = true;
                         break;
@@ -426,7 +429,7 @@ int main(int argc, char* argv[] ){
                     if(c.open) {
                         for(int j = 0; j < c.items.size(); j++) {
                             if(c.items[j].name == itemName) {
-                                inventory.push_back(currRoom->containers[i].items.at(j));
+                                allContainers["inventory"].items.push_back(currRoom->containers[i].items.at(j));
                                 currRoom->items.erase(currRoom->items.begin() + i);
                                 found = true;
                                 break;
