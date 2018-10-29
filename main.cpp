@@ -373,7 +373,7 @@ int main(int argc, char* argv[] ){
 
     // Make current room
     Room* currRoom = &allRooms["Entrance"];
-    currRoom->printRoom();
+    //currRoom->printRoom();
 
     /* Start Reading Input */
     vector<Item> inventory;
@@ -389,6 +389,7 @@ int main(int argc, char* argv[] ){
         // Parse instructions
         if(commands.size() > 0) {
             string key = commands[0];
+            // Move on if no triggers found
             if (key == "n" || key == "s" || key == "e" || key == "w") {
                 cout << "Direction" << endl;
             }
@@ -409,7 +410,35 @@ int main(int argc, char* argv[] ){
             else if (key == "take" && commands.size() > 1) {
                 // changes item ownership from room or container to inventory
                 string itemName = commands[1];
-                // Check that the item is in the room
+                bool found = false;
+                // Check if the item is in the room
+                for(int i = 0; i < currRoom->items.size(); i++) {
+                    if(currRoom->items[i].name == itemName) {
+                        inventory.push_back(currRoom->items.at(i));
+                        currRoom->items.erase(currRoom->items.begin() + i);
+                        found = true;
+                        break;
+                    }
+                }
+                // Check containers
+                for(int i = 0; !found && i < currRoom->containers.size(); i++) {
+                    Container c = currRoom->containers[i];
+                    if(c.open) {
+                        for(int j = 0; j < c.items.size(); j++) {
+                            if(c.items[j].name == itemName) {
+                                inventory.push_back(currRoom->containers[i].items.at(j));
+                                currRoom->items.erase(currRoom->items.begin() + i);
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if(found) {
+                    cout << "Item " << itemName << " added to inventory." << endl;
+                } else {
+                    cout << "Error" << endl;
+                }
             }
             else if (key == "open") {
                 if(commands.size() > 1 && commands[1] == "exit") {

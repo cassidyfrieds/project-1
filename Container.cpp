@@ -4,6 +4,7 @@ Container::Container(){
         name = "";
         status = "";
         descrip = "";
+        open = false;
 }   
 
 Container::~Container(){
