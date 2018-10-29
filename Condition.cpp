@@ -10,6 +10,7 @@ Condition::Condition(){
 Condition::~Condition(){
 }
 
+
 void Condition::printCondition() const {
     if(has) {
         cout << owner << " must have the " << obj << endl;
