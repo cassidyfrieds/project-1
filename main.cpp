@@ -371,6 +371,11 @@ int main(int argc, char* argv[] ){
     }
     **/
 
+   //current room a refrence 
+   //Room currRoom
+   Room* currRoom = &allRooms["Staircase"];//["Entrance"];
+   currRoom->printRoom();
+
     /* Start Reading Input */
     while(true) {
         // Gather input string
@@ -380,6 +385,8 @@ int main(int argc, char* argv[] ){
 
         // Split string at spaces
         vector<string> commands = splitString(input, ' ');
+        //take torch 
+            //command[0] command[1]
 
         // Parse instructions
         string key = commands[0];
@@ -393,12 +400,40 @@ int main(int argc, char* argv[] ){
             string itemName = commands[1];
             cout << "Take " << itemName << endl;
         }
-        else if (key == "open") {
-            if(commands.size() > 1 && commands[1] == "exit") {
-                // Open Exit
+        else if (key == "open") { 
+            if(commands.size() > 1 && commands[1] == "exit") { //room has to be exit
+                // Open Exit 
+                cout << "Game Over" << endl;
+                break;
             }
-            else {
-                // Open
+            else { 
+                // Open CONTAINER
+                //need to make sure containername is in currentRoom containers and exists
+                bool foundContainer = false; //T if container is found in current room
+                for(int i = 0; i < currRoom->containers.size(); i++){
+                    if(currRoom->containers[i].name == commands[1]){
+                        foundContainer = true; //container is found within room
+                        Container* temp = &(currRoom->containers[i]);
+                        temp->open = true; //container was opened
+                        
+                        if(temp->items.empty()) { //container is empty
+                            cout << temp->name << " is empty. " << endl;
+                        }
+                        else{ //container contains items
+                            cout << temp->name << " contains ";
+                            cout << temp->items[0].name;
+                            for(int i = 1; i < temp->items.size(); i++){
+                                cout << ", " << temp->items[i].name;
+                            }
+                            cout << endl;
+                        }
+                        break;
+                    }
+                }
+
+                if(!foundContainer){ //if container is not found
+                    cout << "Container not found" << endl; //or print error
+                }
             }
         }
         else if (key == "read") {

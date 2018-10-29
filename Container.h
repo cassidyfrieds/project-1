@@ -15,6 +15,7 @@ class Container {
         string name;
         string status;
         string descrip;
+        bool open;
         vector <string> accepts; // compare string to items name before putting in??
         vector <Item> items;
         vector <Trigger> triggers; //vector of triggers
