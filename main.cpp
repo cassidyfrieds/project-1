@@ -371,6 +371,10 @@ int main(int argc, char* argv[] ){
     }
     **/
 
+    // Make current room
+    Room* currRoom = &allRooms["Entrance"];
+    currRoom->printRoom();
+
     /* Start Reading Input */
     vector<Item> inventory;
     while(true) {
@@ -405,8 +409,7 @@ int main(int argc, char* argv[] ){
             else if (key == "take" && commands.size() > 1) {
                 // changes item ownership from room or container to inventory
                 string itemName = commands[1];
-
-                cout << "Take " << itemName << endl;
+                // Check that the item is in the room
             }
             else if (key == "open") {
                 if(commands.size() > 1 && commands[1] == "exit") {
