@@ -18,6 +18,17 @@
 using namespace std;
 using namespace rapidxml;
 
+vector<string> splitString(const string& s, char delimiter)
+{
+   vector<string> tokens;
+   string token;
+   istringstream tokenStream(s);
+   while (getline(tokenStream, token, delimiter))
+   {
+      tokens.push_back(token);
+   }
+   return tokens;
+}
 
 int main(int argc, char* argv[] ){
 
@@ -103,7 +114,7 @@ int main(int argc, char* argv[] ){
             }
             temp.triggers.push_back(tempTrigger);
         }
-        temp.printItem();
+        //temp.printItem();
         allItems[temp.name] = temp;
     }
 
@@ -192,7 +203,7 @@ int main(int argc, char* argv[] ){
             }
             temp.triggers.push_back(tempTrigger);
         }
-        temp.printCreature();
+        //temp.printCreature();
         allCreatures[temp.name] = temp;
     }
     
@@ -258,15 +269,13 @@ int main(int argc, char* argv[] ){
             temp.triggers.push_back(tempTrigger);
         }
 
-        temp.printContainer();
+        //temp.printContainer();
         allContainers[temp.name] = temp;
     }
 
     /*
         Parse rooms
     */
-    //nt borderCount = 0; //counter for number of borders to push name and directions
-    //int bDirCount = 0;
     map<std::string, Room> allRooms;
     for(xml_node<> * room_node = root_node->first_node("room"); room_node; room_node = room_node->next_sibling("room")) {
         Room temp;
@@ -334,7 +343,8 @@ int main(int argc, char* argv[] ){
             temp.triggers.push_back(tempTrigger);
         }
            
-        temp.printRoom();
+        //temp.printRoom();
+
         allRooms[temp.name] = temp;
     }
 
@@ -360,4 +370,51 @@ int main(int argc, char* argv[] ){
         currRoom.printRoomBorders();
     }
     **/
+
+    /* Start Reading Input */
+    while(true) {
+        // Gather input string
+        string input;
+        cout << "> ";
+        getline(cin, input);   
+
+        // Split string at spaces
+        vector<string> commands = splitString(input, ' ');
+
+        // Parse instructions
+        string key = commands[0];
+        if (key == "n" || key == "s" || key == "e" || key == "w") {
+            cout << "Direction" << endl;
+        }
+        else if (key == "i") {
+            cout << "Inventory:" << endl;
+        }
+        else if (key == "take" && commands.size() > 1) {
+            string itemName = commands[1];
+            cout << "Take " << itemName << endl;
+        }
+        else if (key == "open") {
+            if(commands.size() > 1 && commands[1] == "exit") {
+                // Open Exit
+            }
+            else {
+                // Open
+            }
+        }
+        else if (key == "read") {
+
+        }
+        else if (key == "drop") {
+
+        }
+        else if (key == "put") {
+
+        }
+        else if (key == "turn" && commands.size() > 1 && commands[1] == "on") {
+            cout << "Turn on" << endl;
+        }
+        else {
+            cout << "Error" << endl;
+        }
+    }
 };
