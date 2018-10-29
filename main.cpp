@@ -372,6 +372,7 @@ int main(int argc, char* argv[] ){
     **/
 
     /* Start Reading Input */
+    vector<Item> inventory;
     while(true) {
         // Gather input string
         string input;
@@ -382,39 +383,54 @@ int main(int argc, char* argv[] ){
         vector<string> commands = splitString(input, ' ');
 
         // Parse instructions
-        string key = commands[0];
-        if (key == "n" || key == "s" || key == "e" || key == "w") {
-            cout << "Direction" << endl;
-        }
-        else if (key == "i") {
-            cout << "Inventory:" << endl;
-        }
-        else if (key == "take" && commands.size() > 1) {
-            string itemName = commands[1];
-            cout << "Take " << itemName << endl;
-        }
-        else if (key == "open") {
-            if(commands.size() > 1 && commands[1] == "exit") {
-                // Open Exit
+        if(commands.size() > 0) {
+            string key = commands[0];
+            if (key == "n" || key == "s" || key == "e" || key == "w") {
+                cout << "Direction" << endl;
+            }
+            else if (key == "i") {
+                // Print all items in inventory
+                cout << "Inventory: ";
+                if(inventory.size() == 0) {
+                    cout << "empty";
+                }
+                for(int i = 0; i < inventory.size(); i++) {
+                    cout << inventory[i].name;
+                    if(i < inventory.size() - 1) {
+                        cout << ",";
+                    } 
+                }
+                cout << endl;
+            }
+            else if (key == "take" && commands.size() > 1) {
+                // changes item ownership from room or container to inventory
+                string itemName = commands[1];
+
+                cout << "Take " << itemName << endl;
+            }
+            else if (key == "open") {
+                if(commands.size() > 1 && commands[1] == "exit") {
+                    // Open Exit
+                }
+                else {
+                    // Open
+                }
+            }
+            else if (key == "read") {
+
+            }
+            else if (key == "drop") {
+
+            }
+            else if (key == "put") {
+
+            }
+            else if (key == "turn" && commands.size() > 1 && commands[1] == "on") {
+                cout << "Turn on" << endl;
             }
             else {
-                // Open
+                cout << "Error" << endl;
             }
-        }
-        else if (key == "read") {
-
-        }
-        else if (key == "drop") {
-
-        }
-        else if (key == "put") {
-
-        }
-        else if (key == "turn" && commands.size() > 1 && commands[1] == "on") {
-            cout << "Turn on" << endl;
-        }
-        else {
-            cout << "Error" << endl;
         }
     }
 };
