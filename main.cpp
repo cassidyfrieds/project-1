@@ -31,7 +31,7 @@ int main(int argc, char* argv[] ){
     buffer.push_back('\0');
     theFile.close();
 
-	doc.parse<0>(&buffer[0]); 	        // Parse the buffer using the xml file parsing library into doc 
+	doc.parse<0>(&buffer[0]); 	        // Parse the buffer using the xml file parsing library into doc
 	root_node = doc.first_node("map");  // Find our map node
     if (root_node == NULL){
         cout << "cant get root node" << endl;
@@ -40,7 +40,7 @@ int main(int argc, char* argv[] ){
 
     /*
         Parse Items
-    */    
+    */
     map<std::string, Item> allItems;
     for(xml_node<> * item_node = root_node->first_node("item"); item_node; item_node = item_node->next_sibling("item")) {
         Item temp;
@@ -113,11 +113,11 @@ int main(int argc, char* argv[] ){
         }
         if(creature_node->first_node("trigger")) {
             temp.triggers.push_back(creature_node->first_node("trigger")->value());
-        } 
+        }
         temp.printCreature();
         allCreatures[temp.name] = temp;
     }
-    
+
     /*
         Parse rooms
     */
@@ -141,7 +141,7 @@ int main(int argc, char* argv[] ){
         /*
         if(room_node->first_node("border")) { //THIS SHIZ IS FUNKY
             temp.borders.push_back(Border());
-            
+
             if(room_node->first_node("border")->first_node("name")) {
                 temp.borders[borderCount].name = (room_node->first_node("border")->first_node("name")->value());
                 //(temp.borders.name).push_back(room_node->first_node("border")->first_node("name")->value()); //might not be indexing right??
@@ -157,7 +157,7 @@ int main(int argc, char* argv[] ){
 
     /*
         Parse containers
-    */    
+    */
     /*
     map<std::string, Container> allContainers;
     for(xml_node<> * container_node = root_node->first_node("container"); container_node; container_node = container_node->next_sibling("container")) {
