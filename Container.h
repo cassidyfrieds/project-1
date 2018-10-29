@@ -7,6 +7,7 @@
 #include <vector> 
 
 #include "Trigger.h"
+#include "Item.h"
 
 using namespace std;
 
@@ -16,8 +17,8 @@ class Container{
         string name;
         string status;
         string descrip;
-        vector <string> accepts;
-        vector <string> items;
+        vector <string> accepts; // compare string to items name before putting in??
+        vector <Item> items;
         vector <Trigger> triggers; //vector of triggers
 
 };

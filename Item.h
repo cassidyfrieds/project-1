@@ -1,3 +1,7 @@
+//#ifndef PROJECT_1_ITEM_H
+//#define PROJECT_1_ITEM_H
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <stdio.h>
@@ -7,7 +11,10 @@
 
 using namespace std;
 
-//Turnon struct? GITHUB example has it but we cant make it too similar!!!
+struct TurnOn{
+    string print;
+    string action;
+};
 
 class Item{
     public:
@@ -17,8 +24,12 @@ class Item{
         string status;
         string descrip; //description
         string writing;
-        bool turnon; // ? action elements in turnon are executed if conditions are met
-        vector <Trigger> triggers;
-    
+        TurnOn turnon;
+        //vector <Trigger> triggers;
 
+        Item();
+        ~Item();
+        void printItem() const;
 };
+
+//#endif

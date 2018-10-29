@@ -1,0 +1,32 @@
+i
+take sword
+read sword
+i
+open closet
+read sword
+take sword
+read sword
+n
+take bottle
+take note
+n
+take note
+read note
+open bottle
+take note
+read note
+put sword in bottle
+put sword in closet
+put sword in container
+open bottle
+open closet
+take note
+open bottle
+take sword
+put sword in container
+open container
+take sword
+i
+take sword
+n
+open exit

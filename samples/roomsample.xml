@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<map>
+  <room>
+    <name>Entrance</name>
+    <description>You find yourself at the mouth of a cave and decide that in spite of common sense and any sense of self preservation that you're going to go exploring north into it.  It's a little dark, but luckily there are some torches on the wall.</description>
+    <border>
+      <direction>north</direction>
+      <name>room4</name>
+    </border>
+    <border>
+      <direction>south</direction>
+      <name>room5</name>
+    </border>
+  </room>
+  <room>
+    <name>room5</name>
+    <description>SECRET ROOM</description>
+    <border>
+      <direction>east</direction>
+      <name>Entrance</name>
+    </border>
+  </room>
+  <room>
+    <name>room1</name>
+    <description>A huge cavern... might kinda surround you with a locked door to the north, a chest in the center, and a very dark corner...</description>
+    <border>
+      <direction>south</direction>
+      <name>room4</name>
+    </border>
+    <border>
+      <direction>north</direction>
+      <name>Exit</name>
+    </border>
+    <border>
+      <direction>east</direction>
+      <name>room2</name>
+    </border>
+  </room>
+  <room>
+    <name>room2</name>
+    <description>A huge cavern... might kinda surround you, a chest in the center, and a dark corner...</description>
+    <border>
+      <direction>west</direction>
+      <name>room1</name>
+    </border>
+    <border>
+      <direction>south</direction>
+      <name>room3</name>
+    </border>
+  </room>
+  <room>
+    <name>room3</name>
+    <description>A huge cavern surrounds you with a locked door to the north and a very dark corner...</description>
+    <border>
+      <direction>north</direction>
+      <name>room2</name>
+    </border>
+    <type>exit</type>
+    <border>
+      <direction>west</direction>
+      <name>room4</name>
+    </border>
+  </room>
+  <room>
+    <name>room4</name>
+    <description>A huge cavern, a chest in the center, and a very dark corner...</description>
+    <border>
+      <direction>east</direction>
+      <name>room3</name>
+    </border>
+    <border>
+      <direction>north</direction>
+      <name>room1</name>
+    </border>
+    <border>
+      <direction>south</direction>
+      <name>Entrance</name>
+    </border>
+  </room>
+  <room>
+    <type>exit</type>
+    <name>Exit</name>
+    <description>You found the exit!</description>
+    <border>
+      <name>room4</name>
+      <direction>south</direction> 
+    </border>
+  </room>
+</map>

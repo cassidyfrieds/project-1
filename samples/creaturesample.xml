@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<map>
+  <room>
+    <name>Entrance</name>
+    <description>Room - Entrance</description>
+    <border>
+      <direction>north</direction>
+      <name>Main</name>
+    </border>
+    <item>axe</item>
+  </room>
+  <room>
+    <name>Main</name>
+    <creature>dragon</creature>
+    <item>sword</item>
+    <description>Room - Main</description>
+    <border>
+      <direction>south</direction>
+      <name>Entrance</name>
+    </border>
+    <border>
+      <direction>north</direction>
+      <name>Staircase</name>
+    </border>
+  </room>
+  <room>
+    <type>exit</type>
+    <name>Staircase</name>
+    <description>Room - Staircase (exit)</description>
+    <border>
+      <name>Main</name>
+      <direction>south</direction>
+    </border>
+    <container>bottle</container>
+  </room>
+  <item>
+    <name>sword</name>
+  </item>
+  <item>
+    <name>note</name>
+    <writing>You found the exit :-)</writing>
+  </item>
+  <item>
+    <name>axe</name>
+  </item>
+  <container>
+    <name>bottle</name>
+    <item>note</item>
+  </container>
+  <creature>
+    <name>giant</name>
+    <vulnerability>sword</vulnerability>
+    <vulnerability>axe</vulnerability>
+    <attack>
+      <action>Game Over</action>
+    </attack>
+  </creature>
+  <creature>
+    <name>dragon</name>
+    <vulnerability>sword</vulnerability>
+    <vulnerability>axe</vulnerability>
+    <attack>
+      <action>Add giant to Main</action>
+      <action>s</action>
+      <print>Giant scares you away</print>
+      <action>Delete dragon</action>
+    </attack>
+  </creature>
+</map>

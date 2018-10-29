@@ -1,0 +1,14 @@
+open exit
+s
+open exit
+n
+e
+n
+e
+n
+w
+n
+n
+s
+e
+open exit
