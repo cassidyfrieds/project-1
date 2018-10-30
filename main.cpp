@@ -637,6 +637,7 @@ int main(int argc, char* argv[] ){
                                     currRoom->containers[k].items.push_back(allContainers["inventory"].items[i]);
                                     allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + k);
                                     cout << "Item " << itemName <<  " added to " << containerName << "." << endl;
+                                    // TODO: do we need to check if this opens the container?
                                     break;
                                 } else {
                                     cout << containerName << " is closed." << endl;
@@ -654,8 +655,50 @@ int main(int argc, char* argv[] ){
                     cout << itemName << " not in inventory." << endl;
                 }
             }
-            else if (key == "turn" && commands.size() > 1 && commands[1] == "on") {
-                cout << "Turn on" << endl;
+            else if (key == "turn" && commands.size() > 2 && commands[1] == "on") {
+                // activates an item if it is in the player’s inventory printing “You activate the (item).” 
+                string itemName = commands[2];
+                // Check if the item is in the inventory
+                bool foundItem = false;
+                for(int i = 0; i < allContainers["inventory"].items.size(); i++) {
+                    if(allContainers["inventory"].items[i].name == itemName) {
+                        foundItem = true;
+                        cout << "You activate the " << itemName << endl;
+                        cout << allContainers["inventory"].items[i].turnon.print << endl;
+                        // TODO: run the actions
+                        // parseAction(allContainers["inventory"].items[i].turnon.action)
+                    }
+                }
+                if(!foundItem) {
+                    cout << itemName << " not in inventory." << endl;
+                }
+            }
+            else if (key == "attack" && commands.size() > 3) {
+                // prints “You assault the (creature) with the (item).” and executes “attack” elements 
+                // if item matches creature’s “vulnerability” and existing conditions are met
+                string creatureName = commands[1];
+                string itemName = commands[3];
+                // Check if the item is in the inventory
+                bool foundItem = false, foundCreature = false;
+                for(int i = 0; !foundItem && i < allContainers["inventory"].items.size(); i++) {
+                    if(allContainers["inventory"].items[i].name == itemName) {
+                        foundItem = true;
+                        // Check if creature in room
+                        for(int j = 0; !foundCreature && j < currRoom->creatures.size(); j++) {
+                            if(currRoom->creatures[i].name == creatureName) {
+                                foundCreature = true;
+                                // TODO: CHECK VULNERABILITY
+                                cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
+                            }
+                        }
+                        if(!foundCreature) {
+                            cout << creatureName << " not in room." << endl;
+                        }
+                    }
+                }
+                if(!foundItem) {
+                    cout << itemName << " not in inventory." << endl;
+                }
             }
             else {
                 cout << "Error" << endl;
