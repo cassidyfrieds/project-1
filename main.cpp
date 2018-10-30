@@ -450,62 +450,48 @@ int main(int argc, char* argv[] ){
         if(commands.size() > 0) {
             string key = commands[0];
             // Move on if no triggers found
-            if (key == "n" || key == "s" || key == "e" || key == "w") {
-                //cout << "Direction" << endl;
-                //check if triggered
-                /*
-                bool triggered = false;
-                for (int x=0; x<(currRoom->triggers.size()); x++){
-                    for (int y=0; y<(currRoom->triggers[x].commands.size()); y++){
-                        if (currRoom->triggers[x].commands[y].compare(key) == 0){
-                            triggered = checkTriggerCondition(currRoom->triggers[x]);
-                        }
+            if(isTriggered(currRoom, key)) {
+                // Block the action from happening
+            }
+            else if ((key == "n" || key == "s" || key == "e" || key == "w")) {
+                bool roomChange = false;
+                for (int i=0; i<(currRoom->borders.size()); i++){
+                    if (key== "n" && (currRoom->borders[i].direction).compare("north")==0 ){
+                        Room* temp = &allRooms[currRoom->borders[i].name];
+                        currRoom = temp;
+                        roomChange = true;
+                        break;
                     }
-                    if (triggered==true){
-                        cout << currRoom->triggers[x].print << endl;
+                    if (key== "s" && (currRoom->borders[i].direction).compare("south")==0 ){
+                        Room* temp = &allRooms[currRoom->borders[i].name];
+                        currRoom = temp;
+                        roomChange = true;
+                        break;
+                    }
+                    if (key== "e" && (currRoom->borders[i].direction).compare("east")==0 ){
+                        Room* temp = &allRooms[currRoom->borders[i].name];
+                        currRoom = temp;
+                        roomChange = true;
+                        break;
+                    }
+                    if (key== "w" && (currRoom->borders[i].direction).compare("west")==0 ){
+                        Room* temp = &allRooms[currRoom->borders[i].name];
+                        currRoom = temp;
+                        roomChange = true;
+                        break;
                     }
                 }
-                */
-                if (!isTriggered(currRoom, key)){ // Confirm the command is not blocked by a trigger
-                    bool roomChange = false;
-                    for (int i=0; i<(currRoom->borders.size()); i++){
-                        if (key== "n" && (currRoom->borders[i].direction).compare("north")==0 ){
-                            Room* temp = &allRooms[currRoom->borders[i].name];
-                            currRoom = temp;
-                            roomChange = true;
-                            break;
-                        }
-                        if (key== "s" && (currRoom->borders[i].direction).compare("south")==0 ){
-                            Room* temp = &allRooms[currRoom->borders[i].name];
-                            currRoom = temp;
-                            roomChange = true;
-                            break;
-                        }
-                        if (key== "e" && (currRoom->borders[i].direction).compare("east")==0 ){
-                            Room* temp = &allRooms[currRoom->borders[i].name];
-                            currRoom = temp;
-                            roomChange = true;
-                            break;
-                        }
-                        if (key== "w" && (currRoom->borders[i].direction).compare("west")==0 ){
-                            Room* temp = &allRooms[currRoom->borders[i].name];
-                            currRoom = temp;
-                            roomChange = true;
-                            break;
-                        }
+                if (roomChange == true){
+                    cout << currRoom->descrip <<endl;
+                    for (int x=0; x<(currRoom->triggers.size()); x++){
+                        bool triggered = checkTriggerCondition(currRoom->triggers[x]);  
+                        if (triggered==true){
+                                cout << currRoom->triggers[x].print << endl;
+                        }  
                     }
-                    if (roomChange == true){
-                        cout << currRoom->descrip <<endl;
-                        for (int x=0; x<(currRoom->triggers.size()); x++){
-                            bool triggered = checkTriggerCondition(currRoom->triggers[x]);  
-                            if (triggered==true){
-                                 cout << currRoom->triggers[x].print << endl;
-                            }  
-                        }
-                    }
-                    else{
-                        cout << "Can't go that way." << endl;
-                    }
+                }
+                else{
+                    cout << "Can't go that way." << endl;
                 }
             }
             else if (key == "i") {
