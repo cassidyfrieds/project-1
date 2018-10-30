@@ -465,15 +465,6 @@ int main(int argc, char* argv[] ){
                         if (currRoom->triggers[x].commands[y].compare(key) == 0){
                             triggered = checkTriggerCondition(currRoom->triggers[x]);
                         }
-                        if (currRoom->triggers[x].commands[y].compare(key) == 0){
-                            triggered = checkTriggerCondition(currRoom->triggers[x]);
-                        }
-                        if (currRoom->triggers[x].commands[y].compare(key) == 0){
-                            triggered = checkTriggerCondition(currRoom->triggers[x]);
-                        }
-                        if (currRoom->triggers[x].commands[y].compare(key) == 0){
-                            triggered = checkTriggerCondition(currRoom->triggers[x]);
-                        }
                     }
                     if (triggered==true){
                         cout << currRoom->triggers[x].print << endl;
