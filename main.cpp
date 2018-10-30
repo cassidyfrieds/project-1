@@ -511,7 +511,6 @@ int main(int argc, char* argv[] ){
             }
             else if (key == "take" && commands.size() > 1) {
                 // changes item ownership from room or container to inventory
-                /// TODO: check triggers
                 string itemName = commands[1];
                 bool found = false;
                 // Check if the item is in the room
@@ -525,12 +524,11 @@ int main(int argc, char* argv[] ){
                 }
                 // Check containers
                 for(int i = 0; !found && i < currRoom->containers.size(); i++) {
-                    Container c = currRoom->containers[i];
-                    if(c.open) {
-                        for(int j = 0; j < c.items.size(); j++) {
-                            if(c.items[j].name == itemName) {
-                                allContainers["inventory"].items.push_back(currRoom->containers[i].items.at(j));
-                                currRoom->items.erase(currRoom->items.begin() + i);
+                    if(currRoom->containers[i].open) {
+                        for(int j = 0; j < currRoom->containers[i].items.size(); j++) {
+                            if(currRoom->containers[i].items[j].name == itemName) {
+                                allContainers["inventory"].items.push_back(currRoom->containers[i].items[j]);
+                                currRoom->containers[i].items.erase(currRoom->containers[i].items.begin() + j);
                                 found = true;
                                 break;
                             }
@@ -540,7 +538,7 @@ int main(int argc, char* argv[] ){
                 if(found) {
                     cout << "Item " << itemName << " added to inventory." << endl;
                 } else {
-                    cout << "Error" << endl;
+                    cout << itemName << " not found." << endl;
                 }
             }
             else if (key == "open" && commands.size() > 1) {
@@ -621,8 +619,40 @@ int main(int argc, char* argv[] ){
                     cout << itemName << " not found." << endl;
                 }
             }
-            else if (key == "put") {
-
+            else if (key == "put" && commands.size() > 3) {
+                // adds the item to the containers inventory and and prints “Item (item) added to (container).
+                string itemName = commands[1];
+                string containerName = commands[3];
+                bool foundItem = false;
+                bool foundContainer = false;
+                // Check if the item is in the inventory
+                for(int i = 0; i < allContainers["inventory"].items.size(); i++) {
+                    if(allContainers["inventory"].items[i].name == itemName) {
+                        foundItem = true;
+                        // Check if the container is in the room
+                        for(int k = 0; k < currRoom->containers.size(); k++) {
+                            if(currRoom->containers[k].name == containerName) {
+                                foundContainer = true;
+                                if(currRoom->containers[k].open) {
+                                    currRoom->containers[k].items.push_back(allContainers["inventory"].items[i]);
+                                    allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + k);
+                                    cout << "Item " << itemName <<  " added to " << containerName << "." << endl;
+                                    break;
+                                } else {
+                                    cout << containerName << " is closed." << endl;
+                                }
+                            }
+                        }
+                        if(!foundContainer) {
+                            cout << containerName << " isn't in this room." << endl;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                if(!foundItem) {
+                    cout << itemName << " not in inventory." << endl;
+                }
             }
             else if (key == "turn" && commands.size() > 1 && commands[1] == "on") {
                 cout << "Turn on" << endl;
