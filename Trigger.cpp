@@ -24,6 +24,7 @@ void Trigger::printTrigger() const {
     for(int i = 0; i < conditions.size(); i++) {
         cout << "\t\t\t~ ";
         conditions[i].printCondition();
+        
     }
     cout << "\n" << endl;
 };

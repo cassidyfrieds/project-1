@@ -9,7 +9,7 @@ class Condition {
     public:
         string obj; //object
         string owner;
-        bool has; //cass changed this
+        string has; //cass changed this, ayushi changed back
         string status;
 
         Condition();
