@@ -462,16 +462,16 @@ int main(int argc, char* argv[] ){
                 bool triggered = false;
                 for (int x=0; x<(currRoom->triggers.size()); x++){
                     for (int y=0; y<(currRoom->triggers[x].commands.size()); y++){
-                        if (currRoom->triggers[x].commands[y].compare("n") == 0){
+                        if (currRoom->triggers[x].commands[y].compare(key) == 0){
                             triggered = checkTriggerCondition(currRoom->triggers[x]);
                         }
-                        if (currRoom->triggers[x].commands[y].compare("s") == 0){
+                        if (currRoom->triggers[x].commands[y].compare(key) == 0){
                             triggered = checkTriggerCondition(currRoom->triggers[x]);
                         }
-                        if (currRoom->triggers[x].commands[y].compare("e") == 0){
+                        if (currRoom->triggers[x].commands[y].compare(key) == 0){
                             triggered = checkTriggerCondition(currRoom->triggers[x]);
                         }
-                        if (currRoom->triggers[x].commands[y].compare("w") == 0){
+                        if (currRoom->triggers[x].commands[y].compare(key) == 0){
                             triggered = checkTriggerCondition(currRoom->triggers[x]);
                         }
                     }
