@@ -543,8 +543,8 @@ int main(int argc, char* argv[] ){
                     cout << "Error" << endl;
                 }
             }
-            else if (key == "open") {
-                if(commands.size() > 1 && commands[1] == "exit") { 
+            else if (key == "open" && commands.size() > 1) {
+                if(commands[1] == "exit") { 
                     // Open Exit
                     if(currRoom->type == "exit") {
                         cout << "Game Over" << endl;
@@ -583,10 +583,27 @@ int main(int argc, char* argv[] ){
                     }
                 }
             }
-            else if (key == "read") {
-
+            else if (key == "read" && commands.size() > 1) {
+                //prints whatever is written on an object that the player has
+                string itemName = commands[1];
+                bool found = false;
+                for(int i = 0; i < allContainers["inventory"].items.size(); i++) {
+                    if(allContainers["inventory"].items[i].name == itemName) {
+                        if(allContainers["inventory"].items[i].writing != "") {
+                            cout << allContainers["inventory"].items[i].writing << endl;
+                        }
+                        else {
+                            cout << "Nothing written." << endl;
+                        }
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found) {
+                    cout << itemName << " not in inventory." << endl;
+                }
             }
-            else if (key == "drop") {
+            else if (key == "drop" && commands.size() > 1) {
                 // changes item ownership from inventory to present room and prints “(item) dropped.”
                 string itemName = commands[1];
                 bool found = false;
