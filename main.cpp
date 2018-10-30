@@ -65,6 +65,26 @@ bool checkTriggerCondition(Trigger trig){
     return tempTrig;
 }
 
+bool isTriggered(Room* currRoom, string command) {
+    //check if triggered
+    bool triggered = false;
+    // For each of the room's triggers
+    for (int x=0; x<(currRoom->triggers.size()); x++){
+        // For each of the trigger's commands
+        for (int y=0; y<(currRoom->triggers[x].commands.size()); y++){
+            // If the current command is in the trigger's commands
+            if (currRoom->triggers[x].commands[y].compare(command) == 0){
+                triggered = checkTriggerCondition(currRoom->triggers[x]);
+                break;
+            }
+        }
+        if (triggered==true){
+            cout << currRoom->triggers[x].print << endl;
+        }
+    }
+    return triggered;
+}
+
 int main(int argc, char* argv[] ){
 
     /*
@@ -574,7 +594,22 @@ int main(int argc, char* argv[] ){
 
             }
             else if (key == "drop") {
-
+                // changes item ownership from inventory to present room and prints “(item) dropped.”
+                string itemName = commands[1];
+                bool found = false;
+                // Check if the item is in the inventory
+                for(int i = 0; i < allContainers["inventory"].items.size(); i++) {
+                    if(allContainers["inventory"].items[i].name == itemName) {
+                        currRoom->items.push_back(allContainers["inventory"].items[i]);
+                        allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + i);
+                        found = true;
+                        cout << itemName << " dropped." << endl;
+                        break;
+                    }
+                }
+                if(!found) {
+                    cout << itemName << " not found." << endl;
+                }
             }
             else if (key == "put") {
 
