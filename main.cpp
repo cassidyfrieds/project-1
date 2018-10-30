@@ -38,7 +38,17 @@ vector<string> splitString(const string& s, char delimiter)
 bool checkTriggerCondition(Trigger trig){
     bool tempTrig = true;
     for (int i=0; i<(trig.conditions.size()); i++){
-        if (trig.conditions[i].has){
+        if (trig.conditions[i].has.compare("yes") ==  0 ){
+            tempTrig = false;
+            Container owner = allContainers[trig.conditions[i].owner];
+            Item obj = allItems[trig.conditions[i].obj];
+            for(int x=0; x<(owner.items.size()); x++){
+                if (owner.items[x].name.compare(obj.name) == 0){
+                    tempTrig = true;
+                }
+            }
+        }
+        else if (trig.conditions[i].has.compare("no") ==  0){
             Container owner = allContainers[trig.conditions[i].owner];
             Item obj = allItems[trig.conditions[i].obj];
             for(int x=0; x<(owner.items.size()); x++){
@@ -371,6 +381,25 @@ int main(int argc, char* argv[] ){
             for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
                 tempTrigger.commands.push_back(command_node->value());
             }
+
+            //vector <Condition> trigger.conditions;
+            for(xml_node<> * condition_node = trigger_node->first_node("condition"); condition_node; condition_node = condition_node->next_sibling("condition")) {
+                Condition tempCondition;
+                if(condition_node->first_node("has")) {
+                    tempCondition.has = condition_node->first_node("has")->value();
+                }
+                if(condition_node->first_node("object")) {
+                    tempCondition.obj = condition_node->first_node("object")->value();
+                }
+                if(condition_node->first_node("status")) {
+                    tempCondition.status = condition_node->first_node("status")->value();
+                }
+                if(condition_node->first_node("owner")) {
+                    tempCondition.owner = condition_node->first_node("owner")->value();
+                }
+                tempTrigger.conditions.push_back(tempCondition);
+            }
+
             temp.triggers.push_back(tempTrigger);
         }
 
@@ -480,6 +509,12 @@ int main(int argc, char* argv[] ){
                     }
                     if (roomChange == true){
                         cout << currRoom->descrip <<endl;
+                        for (int x=0; x<(currRoom->triggers.size()); x++){
+                            triggered = checkTriggerCondition(currRoom->triggers[x]);  
+                            if (triggered==true){
+                                 cout << currRoom->triggers[x].print << endl;
+                            }  
+                        }
                     }
                     else{
                         cout << "Can't go that way." << endl;
