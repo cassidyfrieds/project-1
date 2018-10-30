@@ -574,7 +574,22 @@ int main(int argc, char* argv[] ){
 
             }
             else if (key == "drop") {
-
+                // changes item ownership from inventory to present room and prints “(item) dropped.”
+                string itemName = commands[1];
+                bool found = false;
+                // Check if the item is in the inventory
+                for(int i = 0; i < allContainers["inventory"].items.size(); i++) {
+                    if(allContainers["inventory"].items[i].name == itemName) {
+                        currRoom->items.push_back(allContainers["inventory"].items[i]);
+                        allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + i);
+                        found = true;
+                        cout << itemName << " dropped." << endl;
+                        break;
+                    }
+                }
+                if(!found) {
+                    cout << itemName << " not found." << endl;
+                }
             }
             else if (key == "put") {
 
