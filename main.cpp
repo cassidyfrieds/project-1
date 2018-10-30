@@ -428,30 +428,6 @@ int main(int argc, char* argv[] ){
         allRooms[temp.name] = temp;
     }
 
-    /**
-    //reading in borders into room - you have to do it after you have all the rooms made first
-    for(xml_node<> * room_node = root_node->first_node("room"); room_node; room_node = room_node->next_sibling("room")) {
-        Border tempBorder;
-        string name;
-        if(room_node->first_node("name")) {
-            name = room_node->first_node("name")->value();
-        }
-        Room currRoom = allRooms[name];
-        for(xml_node<> * border_node = room_node->first_node("border"); border_node; border_node = border_node->next_sibling("border")) {
-            if(border_node->first_node("direction")) {
-                tempBorder.direction = border_node->first_node("direction")->value();
-            }
-           if(border_node->first_node("name")) {
-                tempBorder.room= allRooms[border_node->first_node("name")->value()];
-            }
-            currRoom.borders.push_back(tempBorder);
-        }
-
-        currRoom.printRoomBorders();
-    }
-    **/
-
-
     // Make current room
     Room* currRoom = &allRooms["Entrance"];
     //currRoom->printRoom();
@@ -469,8 +445,6 @@ int main(int argc, char* argv[] ){
 
         // Split string at spaces
         vector<string> commands = splitString(input, ' ');
-        //take torch
-            //command[0] command[1]
 
         // Parse instructions
         if(commands.size() > 0) {
@@ -479,6 +453,7 @@ int main(int argc, char* argv[] ){
             if (key == "n" || key == "s" || key == "e" || key == "w") {
                 //cout << "Direction" << endl;
                 //check if triggered
+                /*
                 bool triggered = false;
                 for (int x=0; x<(currRoom->triggers.size()); x++){
                     for (int y=0; y<(currRoom->triggers[x].commands.size()); y++){
@@ -490,7 +465,8 @@ int main(int argc, char* argv[] ){
                         cout << currRoom->triggers[x].print << endl;
                     }
                 }
-                if (triggered == false){
+                */
+                if (!isTriggered(currRoom, key)){ // Confirm the command is not blocked by a trigger
                     bool roomChange = false;
                     for (int i=0; i<(currRoom->borders.size()); i++){
                         if (key== "n" && (currRoom->borders[i].direction).compare("north")==0 ){
@@ -521,7 +497,7 @@ int main(int argc, char* argv[] ){
                     if (roomChange == true){
                         cout << currRoom->descrip <<endl;
                         for (int x=0; x<(currRoom->triggers.size()); x++){
-                            triggered = checkTriggerCondition(currRoom->triggers[x]);  
+                            bool triggered = checkTriggerCondition(currRoom->triggers[x]);  
                             if (triggered==true){
                                  cout << currRoom->triggers[x].print << endl;
                             }  
