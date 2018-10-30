@@ -544,10 +544,15 @@ int main(int argc, char* argv[] ){
                 }
             }
             else if (key == "open") {
-                if(commands.size() > 1 && commands[1] == "exit") { //room has to be exit
+                if(commands.size() > 1 && commands[1] == "exit") { 
                     // Open Exit
-                    cout << "Game Over" << endl;
-                    break;
+                    if(currRoom->type == "exit") {
+                        cout << "Game Over" << endl;
+                        return 0;
+                    }
+                    else {
+                        cout << "This is not an exit." << endl;
+                    }
                 }
                 else {
                     // Open CONTAINER
