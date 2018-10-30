@@ -428,30 +428,6 @@ int main(int argc, char* argv[] ){
         allRooms[temp.name] = temp;
     }
 
-    /**
-    //reading in borders into room - you have to do it after you have all the rooms made first
-    for(xml_node<> * room_node = root_node->first_node("room"); room_node; room_node = room_node->next_sibling("room")) {
-        Border tempBorder;
-        string name;
-        if(room_node->first_node("name")) {
-            name = room_node->first_node("name")->value();
-        }
-        Room currRoom = allRooms[name];
-        for(xml_node<> * border_node = room_node->first_node("border"); border_node; border_node = border_node->next_sibling("border")) {
-            if(border_node->first_node("direction")) {
-                tempBorder.direction = border_node->first_node("direction")->value();
-            }
-           if(border_node->first_node("name")) {
-                tempBorder.room= allRooms[border_node->first_node("name")->value()];
-            }
-            currRoom.borders.push_back(tempBorder);
-        }
-
-        currRoom.printRoomBorders();
-    }
-    **/
-
-
     // Make current room
     Room* currRoom = &allRooms["Entrance"];
     //currRoom->printRoom();
@@ -469,67 +445,53 @@ int main(int argc, char* argv[] ){
 
         // Split string at spaces
         vector<string> commands = splitString(input, ' ');
-        //take torch
-            //command[0] command[1]
 
         // Parse instructions
         if(commands.size() > 0) {
             string key = commands[0];
             // Move on if no triggers found
-            if (key == "n" || key == "s" || key == "e" || key == "w") {
-                //cout << "Direction" << endl;
-                //check if triggered
-                bool triggered = false;
-                for (int x=0; x<(currRoom->triggers.size()); x++){
-                    for (int y=0; y<(currRoom->triggers[x].commands.size()); y++){
-                        if (currRoom->triggers[x].commands[y].compare(key) == 0){
-                            triggered = checkTriggerCondition(currRoom->triggers[x]);
-                        }
+            if(isTriggered(currRoom, key)) {
+                // Block the action from happening
+            }
+            else if ((key == "n" || key == "s" || key == "e" || key == "w")) {
+                bool roomChange = false;
+                for (int i=0; i<(currRoom->borders.size()); i++){
+                    if (key== "n" && (currRoom->borders[i].direction).compare("north")==0 ){
+                        Room* temp = &allRooms[currRoom->borders[i].name];
+                        currRoom = temp;
+                        roomChange = true;
+                        break;
                     }
-                    if (triggered==true){
-                        cout << currRoom->triggers[x].print << endl;
+                    if (key== "s" && (currRoom->borders[i].direction).compare("south")==0 ){
+                        Room* temp = &allRooms[currRoom->borders[i].name];
+                        currRoom = temp;
+                        roomChange = true;
+                        break;
+                    }
+                    if (key== "e" && (currRoom->borders[i].direction).compare("east")==0 ){
+                        Room* temp = &allRooms[currRoom->borders[i].name];
+                        currRoom = temp;
+                        roomChange = true;
+                        break;
+                    }
+                    if (key== "w" && (currRoom->borders[i].direction).compare("west")==0 ){
+                        Room* temp = &allRooms[currRoom->borders[i].name];
+                        currRoom = temp;
+                        roomChange = true;
+                        break;
                     }
                 }
-                if (triggered == false){
-                    bool roomChange = false;
-                    for (int i=0; i<(currRoom->borders.size()); i++){
-                        if (key== "n" && (currRoom->borders[i].direction).compare("north")==0 ){
-                            Room* temp = &allRooms[currRoom->borders[i].name];
-                            currRoom = temp;
-                            roomChange = true;
-                            break;
-                        }
-                        if (key== "s" && (currRoom->borders[i].direction).compare("south")==0 ){
-                            Room* temp = &allRooms[currRoom->borders[i].name];
-                            currRoom = temp;
-                            roomChange = true;
-                            break;
-                        }
-                        if (key== "e" && (currRoom->borders[i].direction).compare("east")==0 ){
-                            Room* temp = &allRooms[currRoom->borders[i].name];
-                            currRoom = temp;
-                            roomChange = true;
-                            break;
-                        }
-                        if (key== "w" && (currRoom->borders[i].direction).compare("west")==0 ){
-                            Room* temp = &allRooms[currRoom->borders[i].name];
-                            currRoom = temp;
-                            roomChange = true;
-                            break;
-                        }
+                if (roomChange == true){
+                    cout << currRoom->descrip <<endl;
+                    for (int x=0; x<(currRoom->triggers.size()); x++){
+                        bool triggered = checkTriggerCondition(currRoom->triggers[x]);  
+                        if (triggered==true){
+                                cout << currRoom->triggers[x].print << endl;
+                        }  
                     }
-                    if (roomChange == true){
-                        cout << currRoom->descrip <<endl;
-                        for (int x=0; x<(currRoom->triggers.size()); x++){
-                            triggered = checkTriggerCondition(currRoom->triggers[x]);  
-                            if (triggered==true){
-                                 cout << currRoom->triggers[x].print << endl;
-                            }  
-                        }
-                    }
-                    else{
-                        cout << "Can't go that way." << endl;
-                    }
+                }
+                else{
+                    cout << "Can't go that way." << endl;
                 }
             }
             else if (key == "i") {
@@ -549,7 +511,6 @@ int main(int argc, char* argv[] ){
             }
             else if (key == "take" && commands.size() > 1) {
                 // changes item ownership from room or container to inventory
-                /// TODO: check triggers
                 string itemName = commands[1];
                 bool found = false;
                 // Check if the item is in the room
@@ -563,12 +524,11 @@ int main(int argc, char* argv[] ){
                 }
                 // Check containers
                 for(int i = 0; !found && i < currRoom->containers.size(); i++) {
-                    Container c = currRoom->containers[i];
-                    if(c.open) {
-                        for(int j = 0; j < c.items.size(); j++) {
-                            if(c.items[j].name == itemName) {
-                                allContainers["inventory"].items.push_back(currRoom->containers[i].items.at(j));
-                                currRoom->items.erase(currRoom->items.begin() + i);
+                    if(currRoom->containers[i].open) {
+                        for(int j = 0; j < currRoom->containers[i].items.size(); j++) {
+                            if(currRoom->containers[i].items[j].name == itemName) {
+                                allContainers["inventory"].items.push_back(currRoom->containers[i].items[j]);
+                                currRoom->containers[i].items.erase(currRoom->containers[i].items.begin() + j);
                                 found = true;
                                 break;
                             }
@@ -578,14 +538,19 @@ int main(int argc, char* argv[] ){
                 if(found) {
                     cout << "Item " << itemName << " added to inventory." << endl;
                 } else {
-                    cout << "Error" << endl;
+                    cout << itemName << " not found." << endl;
                 }
             }
-            else if (key == "open") {
-                if(commands.size() > 1 && commands[1] == "exit") { //room has to be exit
+            else if (key == "open" && commands.size() > 1) {
+                if(commands[1] == "exit") { 
                     // Open Exit
-                    cout << "Game Over" << endl;
-                    break;
+                    if(currRoom->type == "exit") {
+                        cout << "Game Over" << endl;
+                        return 0;
+                    }
+                    else {
+                        cout << "This is not an exit." << endl;
+                    }
                 }
                 else {
                     // Open CONTAINER
@@ -616,10 +581,27 @@ int main(int argc, char* argv[] ){
                     }
                 }
             }
-            else if (key == "read") {
-
+            else if (key == "read" && commands.size() > 1) {
+                //prints whatever is written on an object that the player has
+                string itemName = commands[1];
+                bool found = false;
+                for(int i = 0; i < allContainers["inventory"].items.size(); i++) {
+                    if(allContainers["inventory"].items[i].name == itemName) {
+                        if(allContainers["inventory"].items[i].writing != "") {
+                            cout << allContainers["inventory"].items[i].writing << endl;
+                        }
+                        else {
+                            cout << "Nothing written." << endl;
+                        }
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found) {
+                    cout << itemName << " not in inventory." << endl;
+                }
             }
-            else if (key == "drop") {
+            else if (key == "drop" && commands.size() > 1) {
                 // changes item ownership from inventory to present room and prints “(item) dropped.”
                 string itemName = commands[1];
                 bool found = false;
@@ -637,11 +619,86 @@ int main(int argc, char* argv[] ){
                     cout << itemName << " not found." << endl;
                 }
             }
-            else if (key == "put") {
-
+            else if (key == "put" && commands.size() > 3) {
+                // adds the item to the containers inventory and and prints “Item (item) added to (container).
+                string itemName = commands[1];
+                string containerName = commands[3];
+                bool foundItem = false;
+                bool foundContainer = false;
+                // Check if the item is in the inventory
+                for(int i = 0; i < allContainers["inventory"].items.size(); i++) {
+                    if(allContainers["inventory"].items[i].name == itemName) {
+                        foundItem = true;
+                        // Check if the container is in the room
+                        for(int k = 0; k < currRoom->containers.size(); k++) {
+                            if(currRoom->containers[k].name == containerName) {
+                                foundContainer = true;
+                                if(currRoom->containers[k].open) {
+                                    currRoom->containers[k].items.push_back(allContainers["inventory"].items[i]);
+                                    allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + k);
+                                    cout << "Item " << itemName <<  " added to " << containerName << "." << endl;
+                                    // TODO: do we need to check if this opens the container?
+                                    break;
+                                } else {
+                                    cout << containerName << " is closed." << endl;
+                                }
+                            }
+                        }
+                        if(!foundContainer) {
+                            cout << containerName << " isn't in this room." << endl;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                if(!foundItem) {
+                    cout << itemName << " not in inventory." << endl;
+                }
             }
-            else if (key == "turn" && commands.size() > 1 && commands[1] == "on") {
-                cout << "Turn on" << endl;
+            else if (key == "turn" && commands.size() > 2 && commands[1] == "on") {
+                // activates an item if it is in the player’s inventory printing “You activate the (item).” 
+                string itemName = commands[2];
+                // Check if the item is in the inventory
+                bool foundItem = false;
+                for(int i = 0; i < allContainers["inventory"].items.size(); i++) {
+                    if(allContainers["inventory"].items[i].name == itemName) {
+                        foundItem = true;
+                        cout << "You activate the " << itemName << endl;
+                        cout << allContainers["inventory"].items[i].turnon.print << endl;
+                        // TODO: run the actions
+                        // parseAction(allContainers["inventory"].items[i].turnon.action)
+                    }
+                }
+                if(!foundItem) {
+                    cout << itemName << " not in inventory." << endl;
+                }
+            }
+            else if (key == "attack" && commands.size() > 3) {
+                // prints “You assault the (creature) with the (item).” and executes “attack” elements 
+                // if item matches creature’s “vulnerability” and existing conditions are met
+                string creatureName = commands[1];
+                string itemName = commands[3];
+                // Check if the item is in the inventory
+                bool foundItem = false, foundCreature = false;
+                for(int i = 0; !foundItem && i < allContainers["inventory"].items.size(); i++) {
+                    if(allContainers["inventory"].items[i].name == itemName) {
+                        foundItem = true;
+                        // Check if creature in room
+                        for(int j = 0; !foundCreature && j < currRoom->creatures.size(); j++) {
+                            if(currRoom->creatures[i].name == creatureName) {
+                                foundCreature = true;
+                                // TODO: CHECK VULNERABILITY
+                                cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
+                            }
+                        }
+                        if(!foundCreature) {
+                            cout << creatureName << " not in room." << endl;
+                        }
+                    }
+                }
+                if(!foundItem) {
+                    cout << itemName << " not in inventory." << endl;
+                }
             }
             else {
                 cout << "Error" << endl;
