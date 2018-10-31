@@ -529,6 +529,7 @@ int main(int argc, char* argv[] ){
                             if(currRoom->containers[i].items[j].name == itemName) {
                                 allContainers["inventory"].items.push_back(currRoom->containers[i].items[j]);
                                 currRoom->containers[i].items.erase(currRoom->containers[i].items.begin() + j);
+                                allContainers[currRoom->containers[i].name].items.erase(allContainers[currRoom->containers[i].name].items.begin() + j); // WIll this seg fault?
                                 found = true;
                                 break;
                             }
@@ -636,6 +637,7 @@ int main(int argc, char* argv[] ){
                                 foundContainer = true;
                                 if(currRoom->containers[k].open) {
                                     currRoom->containers[k].items.push_back(allContainers["inventory"].items[i]);
+                                    allContainers[containerName].items.push_back(allContainers["inventory"].items[i]);
                                     allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + k);
                                     cout << "Item " << itemName <<  " added to " << containerName << "." << endl;
                                     // TODO: do we need to check if this opens the container?
