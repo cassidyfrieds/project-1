@@ -773,7 +773,6 @@ bool Delete(Item& item) {
     // Check if the item is in the room
     for(int i = 0; i < currRoom->items.size(); i++) {
         if(currRoom->items[i].name == itemName) {
-            allContainers["inventory"].items.push_back(currRoom->items.at(i));
             currRoom->items.erase(currRoom->items.begin() + i);
             found = true;
             break;
@@ -784,7 +783,6 @@ bool Delete(Item& item) {
         if(currRoom->containers[i].open) {
             for(int j = 0; j < currRoom->containers[i].items.size(); j++) {
                 if(currRoom->containers[i].items[j].name == itemName) {
-                    allContainers["inventory"].items.push_back(currRoom->containers[i].items[j]);
                     currRoom->containers[i].items.erase(currRoom->containers[i].items.begin() + j);
                     found = true;
                     break;
@@ -793,9 +791,9 @@ bool Delete(Item& item) {
         }
     }
     if(found) {
-        cout << "Item " << itemName << " added to inventory." << endl;
+        cout << "Item " << itemName << " deleted permanently." << endl;
     } else {
-        cout << itemName << " not found." << endl;
+        cout << itemName << " not found to delete." << endl;
     }
     return found;
 }
