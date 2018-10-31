@@ -21,7 +21,8 @@ using namespace rapidxml;
 map<std::string, Item> allItems;
 map<std::string, Creature> allCreatures;
 map<std::string, Container> allContainers;
- map<std::string, Room> allRooms;
+map<std::string, Room> allRooms;
+Room* currRoom;
 
 //behind the scenes commands declarations
 void Add(Item, Room&);
@@ -90,7 +91,7 @@ bool checkTriggerCondition(Trigger trig){
     return tempTrig;
 }
 
-bool isTriggered(Room* currRoom, string command) {
+bool isTriggered(string command) {
     //check if triggered
     bool triggered = false;
     // For each of the room's triggers
@@ -444,7 +445,7 @@ int main(int argc, char* argv[] ){
     }
 
     // Make current room
-    Room* currRoom = &allRooms["Entrance"];
+    currRoom = &allRooms["Entrance"];
     //currRoom->printRoom();
     cout << currRoom->descrip <<endl;
 
@@ -465,7 +466,7 @@ int main(int argc, char* argv[] ){
         if(commands.size() > 0) {
             string key = commands[0];
             // Move on if no triggers found
-            if(isTriggered(currRoom, key)) {
+            if(isTriggered(key)) {
                 // Block the action from happening
             }
             else if ((key == "n" || key == "s" || key == "e" || key == "w")) {
@@ -767,7 +768,36 @@ bool Delete(Room& room){ //update borders?
 }
 bool Delete(Item& item) {
     //remove from all items and all items in room and all items in containers
-    return true;
+    string itemName = item.name;
+    bool found = false;
+    // Check if the item is in the room
+    for(int i = 0; i < currRoom->items.size(); i++) {
+        if(currRoom->items[i].name == itemName) {
+            allContainers["inventory"].items.push_back(currRoom->items.at(i));
+            currRoom->items.erase(currRoom->items.begin() + i);
+            found = true;
+            break;
+        }
+    }
+    // Check containers
+    for(int i = 0; !found && i < currRoom->containers.size(); i++) {
+        if(currRoom->containers[i].open) {
+            for(int j = 0; j < currRoom->containers[i].items.size(); j++) {
+                if(currRoom->containers[i].items[j].name == itemName) {
+                    allContainers["inventory"].items.push_back(currRoom->containers[i].items[j]);
+                    currRoom->containers[i].items.erase(currRoom->containers[i].items.begin() + j);
+                    found = true;
+                    break;
+                }
+            }
+        }
+    }
+    if(found) {
+        cout << "Item " << itemName << " added to inventory." << endl;
+    } else {
+        cout << itemName << " not found." << endl;
+    }
+    return found;
 }
 bool Delete(Container& container){
     //remove from all containers and all containers in room
@@ -776,7 +806,7 @@ bool Delete(Container& container){
 bool Delete(Creature& creature, string creatName, Room& currRoom){
     //remove from all creatures and all creatures in rooms
 
-// changes item ownership from room or container to inventory
+    // changes item ownership from room or container to inventory
     //string itemName = commands[1]; //when called
     bool found = false;
 
