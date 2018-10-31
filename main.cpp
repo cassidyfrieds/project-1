@@ -625,6 +625,7 @@ int main(int argc, char* argv[] ){
                 string containerName = commands[3];
                 bool foundItem = false;
                 bool foundContainer = false;
+                bool triggered = false;
                 // Check if the item is in the inventory
                 for(int i = 0; i < allContainers["inventory"].items.size(); i++) {
                     if(allContainers["inventory"].items[i].name == itemName) {
@@ -638,10 +639,19 @@ int main(int argc, char* argv[] ){
                                     allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + k);
                                     cout << "Item " << itemName <<  " added to " << containerName << "." << endl;
                                     // TODO: do we need to check if this opens the container?
+                                    for (int x=0; x<(currRoom->containers[k].triggers.size()); x++){
+                                        triggered = checkTriggerCondition(currRoom->containers[k].triggers[x]); 
+                                        if (triggered){
+                                            cout << currRoom->containers[k].triggers[x].print << endl;
+                                        }
+                                    }
+                                
                                     break;
                                 } else {
                                     cout << containerName << " is closed." << endl;
                                 }
+
+
                             }
                         }
                         if(!foundContainer) {
