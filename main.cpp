@@ -95,6 +95,7 @@ bool isTriggered(Room* currRoom, string command) {
     return triggered;
 }
 
+
 int main(int argc, char* argv[] ){
 
     /*
@@ -639,19 +640,19 @@ int main(int argc, char* argv[] ){
                                     allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + k);
                                     cout << "Item " << itemName <<  " added to " << containerName << "." << endl;
                                     // TODO: do we need to check if this opens the container?
+
+                                    //checks if putting item in container sets off a container trigger
                                     for (int x=0; x<(currRoom->containers[k].triggers.size()); x++){
                                         triggered = checkTriggerCondition(currRoom->containers[k].triggers[x]); 
                                         if (triggered){
                                             cout << currRoom->containers[k].triggers[x].print << endl;
+                                            //TODO parse out the action
                                         }
                                     }
-                                
                                     break;
                                 } else {
                                     cout << containerName << " is closed." << endl;
                                 }
-
-
                             }
                         }
                         if(!foundContainer) {
