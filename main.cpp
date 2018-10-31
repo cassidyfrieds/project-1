@@ -762,15 +762,16 @@ void Add(Item itemA, Container& containerA) {
 //will have references to the removed room as a 'border' that was removed, but there 
 //is no means for adding a room back in. 
 
-bool Delete(Room& room){ //update borders?
-
+bool Delete(Room& room){ //update borders?  
+    return true;
 }
 bool Delete(Item& item) {
     //remove from all items and all items in room and all items in containers
+    return true;
 }
 bool Delete(Container& container){
     //remove from all containers and all containers in room
-
+    return true;
 }
 bool Delete(Creature& creature, string creatName, Room& currRoom){
     //remove from all creatures and all creatures in rooms
@@ -780,9 +781,9 @@ bool Delete(Creature& creature, string creatName, Room& currRoom){
     bool found = false;
 
     // Check if the creature is in the room     ASSUME creature is only in 1 room
-    for(int i = 0; i < currRoom->creatures.size(); i++) {
-        if(currRoom->creatures[i].name == creatName) {
-            allRooms[currRoom.name].creatures.erase(i);
+    for(int i = 0; i < currRoom.creatures.size(); i++) {
+        if(currRoom.creatures[i].name == creatName) {
+            allRooms[currRoom.name].creatures.erase(allRooms[currRoom.name].creatures.begin() + i);
             //currRoom->creatures.erase(currRoom->creatures.begin() + i);
             found = true;
             break;
@@ -809,8 +810,9 @@ bool Delete(Creature& creature, string creatName, Room& currRoom){
     } else {
         cout << creatName << " not found." << endl;
     }    
-
+    return found;
 }
+
 
 
 /* Update (object) to (status) */
@@ -832,7 +834,7 @@ bool Update(Container& cont, string status){
 }
 bool Update(Creature& creature, string status){
     creature.status = status; 
-    allCreatures[creatureU.name].status = status;
+    allCreatures[creature.name].status = status;
     cout<<"update creature"<<endl;
     return true;
 }
