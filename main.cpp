@@ -25,15 +25,17 @@ map<std::string, Container> allContainers;
 
 //behind the scenes commands declarations
 void GameOver(bool);
-bool Update(Room&, string);
+bool Update(Room&, string); //idk if these need to return anything
 bool Update(Container&, string);
 bool Update(Creature&, string);
 bool Update(Item&, string);
 
-void Add(Item&, Room&);
-void Add(Creature&, Room&);
-void Add(Item&, Container&);
-void Add(Creature&, Container&);
+void Add(Item, Room&);
+void Add(Creature, Room&);
+void Add(Item, Container&);
+void Add(Creature, Container&);
+void Add(Container, Room&);
+
 
 vector<string> splitString(const string& s, char delimiter)
 {
@@ -496,10 +498,10 @@ int main(int argc, char* argv[] ){
                 if (roomChange == true){
                     cout << currRoom->descrip <<endl;
                     for (int x=0; x<(currRoom->triggers.size()); x++){
-                        bool triggered = checkTriggerCondition(currRoom->triggers[x]);
+                        bool triggered = checkTriggerCondition(currRoom->triggers[x]);  
                         if (triggered==true){
                                 cout << currRoom->triggers[x].print << endl;
-                        }
+                        }  
                     }
                 }
                 else{
@@ -555,9 +557,11 @@ int main(int argc, char* argv[] ){
             }
             else if (key == "open" && commands.size() > 1) {
                 bool over = false;
-                //Update(*currRoom, "woohoo"); //FIX ME testing
-                //cout<<currRoom->status<<endl; //FIX ME testing
-                if(commands[1] == "exit") {
+
+                Update(*currRoom, "woohoo"); //FIX ME testing
+                cout<<currRoom->status<<endl; //FIX ME testing
+
+                if(commands[1] == "exit") { 
                     // Open Exit
                     if(currRoom->type == "exit") {
                         cout << "Game Over" << endl;
@@ -673,7 +677,7 @@ int main(int argc, char* argv[] ){
                 }
             }
             else if (key == "turn" && commands.size() > 2 && commands[1] == "on") {
-                // activates an item if it is in the player’s inventory printing “You activate the (item).”
+                // activates an item if it is in the player’s inventory printing “You activate the (item).” 
                 string itemName = commands[2];
                 // Check if the item is in the inventory
                 bool foundItem = false;
@@ -691,7 +695,7 @@ int main(int argc, char* argv[] ){
                 }
             }
             else if (key == "attack" && commands.size() > 3) {
-                // prints “You assault the (creature) with the (item).” and executes “attack” elements
+                // prints “You assault the (creature) with the (item).” and executes “attack” elements 
                 // if item matches creature’s “vulnerability” and existing conditions are met
                 string creatureName = commands[1];
                 string itemName = commands[3];
@@ -723,55 +727,73 @@ int main(int argc, char* argv[] ){
         }
     }
 };
+/*
 
-//BEHIND THE SCENES COMMANDS
-//Add (object) to (room/container) – creates instance of object with a specific owner
+BEHIND THE SCENES COMMANDS
+
+*/
+/* Add (object) to (room/container) */
+
+//creates instance of object with a specific owner 
 //(does not work on the player's inventory).
-void Add(Item& itemA, Room& roomA) {
+void Add(Item itemA, Room& roomA) {
+    allRooms[roomA.name].items.push_back(itemA);
     roomA.items.push_back(itemA);
 }
-void Add(Creature& creatureA, Room& roomA) {
+void Add(Creature creatureA, Room& roomA) {
+    allRooms[roomA.name].creatures.push_back(creatureA);
     roomA.creatures.push_back(creatureA);
 }
 
-void Add(Item& itemA, Container& containerA) {
+void Add(Item itemA, Container& containerA) {
+    allContainers[containerA.name].items.push_back(itemA);
     containerA.items.push_back(itemA);
 }
-void Add(Creature& creatureA, Container& containerA) {
+void Add(Creature creatureA, Container& containerA) {
    // containerA.creatures.push_back(creatureA); //containers doesnt have creatures
 }
+void Add(Container contA, Room& roomA) {
+    allRooms[roomA.name].containers.push_back(contA);
+    roomA.containers.push_back(contA);
+}
 
-//Delete (object) – removes object references from game, but the item can still be
-//brought back into the game using the 'Add' command. If a room is removed other rooms
-//will have references to the removed room as a 'border' that was removed, but there
-//is no means for adding a room back in.
 
-//Update (object) to (status) – creates new status for object that can be checked by triggers
-//send refrence
-// Room* currRoom = &allRooms["Entrance"];
-// call Update(*currRoom, "string status")
+//Delete (object) – removes object references from game, but the item can still be 
+//brought back into the game using the 'Add' command. If a room is removed other rooms 
+//will have references to the removed room as a 'border' that was removed, but there 
+//is no means for adding a room back in. 
+
+/* Update (object) to (status) */
+
+//Update (object) to (status) – creates new status for object that can be checked by triggers //idk if these need to return anything????
+//send refrence    
+    // Room* currRoom = &allRooms["Entrance"];
+    // call Update(*currRoom, "string status")
 bool Update(Room& roomU, string status){
-    roomU.status = status;
+    roomU.status = status; 
     cout<<"update room"<<endl;
     return true; //maybe check if it worked and return true if so
 }
 bool Update(Container& contU, string status){
-    contU.status = status;
+    contU.status = status; //update status of container
+    allContainers[contU.name].status = status; //update all containers map
     cout<<"update container"<<endl;
     return true;
 }
 bool Update(Creature& creatureU, string status){
-    creatureU.status = status;
+    creatureU.status = status; 
+    allCreatures[creatureU.name].status = status;
     cout<<"update creature"<<endl;
     return true;
 }
 bool Update(Item& itemU, string status){
     itemU.status = status;
+    allItems[itemU.name].status = status;
     cout<<"update item"<<endl;
     return true;
 }
 
-//Game Over – ends the game with a declaration of “Victory!”
+/* Game Over */
 void GameOver(bool over) {
     if(over == true){
         cout<< "Victory!" << endl;
