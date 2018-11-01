@@ -5,6 +5,7 @@ using namespace std;
 Trigger::Trigger(){
     type = "";
     print = "";
+    action = "";
     triggered = false;
 }
 

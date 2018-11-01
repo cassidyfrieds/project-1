@@ -20,7 +20,7 @@ void Container::printContainer() const {
         }
         cout << "Container items:" << endl;
         for(int i = 0; i < items.size(); i++) {
-                items[i].printItem();
+                items[i]->printItem();
         }        
         cout << "Container triggers:" << endl;
         for(int i = 0; i < triggers.size(); i++) {
