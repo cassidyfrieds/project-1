@@ -25,18 +25,18 @@ map<std::string, Room> allRooms;
 Room* currRoom;
 
 //behind the scenes commands declarations
-bool Add(Item, Room&);
-bool Add(Creature, Room&);
-bool Add(Item, Container&);
-bool Add(Container, Room&);
-bool Delete(Room&);
-bool Delete(Item&);
-bool Delete(Container&);
-bool Delete(Creature&);
-bool Update(Room&, string); //idk if these need to return anything
-bool Update(Container&, string);
-bool Update(Creature&, string);
-bool Update(Item&, string);
+bool Add(Item*, Room*);
+bool Add(Creature*, Room*);
+bool Add(Item*, Container*);
+bool Add(Container*, Room*);
+bool Delete(Room*);
+bool Delete(Item*);
+bool Delete(Container*);
+bool Delete(Creature*);
+bool Update(Room*, string);
+bool Update(Container*, string);
+bool Update(Creature*, string);
+bool Update(Item*, string);
 void GameOver(bool);
 
 vector<string> splitString(const string& s, char delimiter)
@@ -118,10 +118,7 @@ bool parseAction(string action){
     bool actionComp = false;
 
     // Split action phrase into words
-    istringstream iss(action);
-    vector<string> tokens;
-    copy(istream_iterator<string>(iss), istream_iterator<string>(), back_inserter(tokens));
-
+    vector<string> tokens = splitString(action, ' ');
 
     //check if add funciton
     if (tokens[0].compare("Add") == 0 && tokens.size()== 4){
@@ -156,19 +153,19 @@ bool parseAction(string action){
     //check if delete function
     if (tokens[0].compare("Delete") == 0 && tokens.size()== 2){
         if (allItems.find(tokens[1]) != allItems.end()){
-            Item obj = allItems[tokens[1]];
+            Item* obj = &allItems[tokens[1]];
             actionComp = Delete(obj);
         } 
         else if (allContainers.find(tokens[1]) != allContainers.end()) {
-            Container obj = allContainers[tokens[1]];
+            Container* obj = &allContainers[tokens[1]];
             actionComp = Delete(obj);
         } 
         else if (allRooms.find(tokens[1]) != allRooms.end()) {
-            Room obj = allRooms[tokens[1]];
+            Room* obj = &allRooms[tokens[1]];
             actionComp = Delete(obj);
         } 
         else if (allCreatures.find(tokens[1]) != allCreatures.end()) {
-            Room obj = allRooms[tokens[1]];
+            Creature* obj = &allCreatures[tokens[1]];
             actionComp = Delete(obj);
         } 
         else {
@@ -656,9 +653,9 @@ int main(int argc, char* argv[] ){
                 if(commands[1] == "exit") {
                     // Open Exit
                     if(currRoom->type == "exit") {
-                        cout << "Game Over" << endl;
                         over = true;
                         GameOver(over);
+                        cout << "Game Over" << endl;
                         return 0;
                     }
                     else {
@@ -860,90 +857,114 @@ bool Add(Item* itemA, Container* containerA) {
 }
 
 
-
 /*
 Delete (object) – removes object references from game, but the item can still be
 brought back into the game using the 'Add' command. If a room is removed other rooms
 will have references to the removed room as a 'border' that was removed, but there
 is no means for adding a room back in.
 */
-
-bool Delete(Room& room){ //update borders?
-    return true;
-}
-bool Delete(Item& item) {
-    //remove from all items and all items in room and all items in containers
-    string itemName = item.name;
+bool Delete(Room* room) {
+    //remove from allRooms
     bool found = false;
+    // Remove from rooms
+    if (allRooms.find(room->name) != allRooms.end()){
+        allRooms.erase(allRooms.find(room->name));
+        found = true;
+
+        //update borders
+        for (map<string,Room>::iterator it=allRooms.begin(); it!=allRooms.end(); ++it) {
+            cout << it->first << " => " << endl; // << it->second << '\n'; 
+            // For every room in the map
+            //string roomName = x.first;
+            //Room room = x.second;
+        }
+    }
+
+    // This method leaves the container in allContainers in case it needs to be parsed later
+    // TODO: decide if we need to delete it
+
+    if(found) {
+        cout << "Room " << room->name << " deleted from allRooms." << endl;
+    } else {
+        cout << room->name << " not found." << endl;
+    }
+    return found;
+}
+bool Delete(Item* item) {
+    //remove from items in room and items in containers
+    string itemName = item->name;
+    bool found = false;
+
     // Check if the item is in the room
     for(int i = 0; i < currRoom->items.size(); i++) {
         if(currRoom->items[i]->name == itemName) {
-            allContainers["inventory"].items.push_back(currRoom->items.at(i));
-            currRoom->items.erase(currRoom->items.begin() + i);
+            currRoom->items.erase(currRoom->items.begin() + i); // Erase from current room
             found = true;
             break;
         }
     }
     // Check containers
     for(int i = 0; !found && i < currRoom->containers.size(); i++) {
-        if(currRoom->containers[i]->open) {
-            for(int j = 0; j < currRoom->containers[i]->items.size(); j++) {
-                if(currRoom->containers[i]->items[j]->name == itemName) {
-                    allContainers["inventory"].items.push_back(currRoom->containers[i]->items[j]);
-                    currRoom->containers[i]->items.erase(currRoom->containers[i]->items.begin() + j);
-                    found = true;
-                    break;
-                }
+        for(int j = 0; j < currRoom->containers[i]->items.size(); j++) {
+            if(currRoom->containers[i]->items[j]->name == itemName) {
+                currRoom->containers[i]->items.erase(currRoom->containers[i]->items.begin() + j);
+                found = true;
+                break;
             }
         }
     }
+
+    // This method leaves the item in allItems in case it needs to be parsed later
+    // TODO: decide if we need to delete it
+
     if(found) {
-        cout << "Item " << itemName << " added to inventory." << endl;
+        cout << "Item " << itemName << " deleted from room/container." << endl;
     } else {
         cout << itemName << " not found." << endl;
     }
     return found;
 }
-bool Delete(Container& container){
-    //remove from all containers and all containers in room
-    return true;
-}
-bool Delete(Creature& creature, string creatName, Room& currRoom){
-    //remove from all creatures and all creatures in rooms
-
-    // changes item ownership from room or container to inventory
-    //string itemName = commands[1]; //when called
+bool Delete(Container* container){
+    //remove from containers in room
     bool found = false;
-
-    // Check if the creature is in the room     ASSUME creature is only in 1 room
-    for(int i = 0; i < currRoom.creatures.size(); i++) {
-        if(currRoom.creatures[i]->name == creatName) {
-            allRooms[currRoom.name].creatures.erase(allRooms[currRoom.name].creatures.begin() + i);
-            //currRoom->creatures.erase(currRoom->creatures.begin() + i);
+    // Check containers
+    for(int i = 0; !found && i < currRoom->containers.size(); i++) {
+        if(currRoom->containers[i]->name == container->name) {
+            currRoom->containers.erase(currRoom->containers.begin() + i);
             found = true;
             break;
         }
     }
 
-    //need to just check creatures in general?
+    // This method leaves the container in allContainers in case it needs to be parsed later
+    // TODO: decide if we need to delete it
 
-    // Check containers
-    /*for(int i = 0; !found && i < currRoom->containers.size(); i++) {
-        if(currRoom->containers[i].open) {
-            for(int j = 0; j < currRoom->containers[i].items.size(); j++) {
-                if(currRoom->containers[i].items[j].name == itemName) {
-                    allContainers["inventory"].items.push_back(currRoom->containers[i].items[j]);
-                    currRoom->containers[i].items.erase(currRoom->containers[i].items.begin() + j);
-                    found = true;
-                    break;
-                }
-            }
-        }
-    } */
     if(found) {
-        cout << "creature " << creatName << " deleted." << endl;
+        cout << "Container " << container->name << " deleted from room." << endl;
     } else {
-        cout << creatName << " not found." << endl;
+        cout << container->name << " not found." << endl;
+    }
+    return found;
+}
+bool Delete(Creature* creature){
+    //remove from creatures in room
+    bool found = false;
+    // Check containers
+    for(int i = 0; !found && i < currRoom->creatures.size(); i++) {
+        if(currRoom->creatures[i]->name == creature->name) {
+            currRoom->creatures.erase(currRoom->creatures.begin() + i);
+            found = true;
+            break;
+        }
+    }
+
+    // This method leaves the creature in allCreatures in case it needs to be parsed later
+    // TODO: decide if we need to delete it
+
+    if(found) {
+        cout << "Creature " << creature->name << " deleted from room." << endl;
+    } else {
+        cout << creature->name << " not found." << endl;
     }
     return found;
 }
@@ -952,7 +973,7 @@ bool Delete(Creature& creature, string creatName, Room& currRoom){
 bool Update(Room* room, string status){
     room->status = status;
     cout << "update room status to " << status << endl;
-    return true; //maybe check if it worked and return true if so
+    return true;
 }
 bool Update(Container* cont, string status){
     cont->status = status;
