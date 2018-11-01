@@ -801,6 +801,7 @@ int main(int argc, char* argv[] ){
                 // if item matches creature’s “vulnerability” and existing conditions are met
                 string creatureName = commands[1];
                 string itemName = commands[3];
+                
                 // Check if the item is in the inventory
                 bool foundItem = false, foundCreature = false, foundVulner = false;
                 for(int i = 0; !foundItem && i < allContainers["inventory"].items.size(); i++) {
@@ -827,7 +828,6 @@ int main(int argc, char* argv[] ){
                                     cout << "The " << creatureName << " is not vulnerable to " << itemName << endl;
                                 }
                                 break;
-
                             }
                         }
                         if(!foundCreature) {
