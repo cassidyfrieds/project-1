@@ -873,10 +873,14 @@ bool Delete(Room* room) {
 
         //update borders
         for (map<string,Room>::iterator it=allRooms.begin(); it!=allRooms.end(); ++it) {
-            cout << it->first << " => " << endl; // << it->second << '\n'; 
             // For every room in the map
-            //string roomName = x.first;
-            //Room room = x.second;
+            Room* room = &allRooms[it->first]; // it->first is the map key
+
+            for(int i = 0; i < room->borders.size(); i++) {
+                if(room->borders[i].name == room->name) {
+                    room->borders.erase(room->borders.begin() + i);
+                }
+            }
         }
     }
 
