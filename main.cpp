@@ -51,21 +51,21 @@ vector<string> splitString(const string& s, char delimiter)
    return tokens;
 }
 
-bool checkTriggerCondition(Trigger trig){
+bool checkCondition(vector<Condition> conditions){
     bool tempTrig = true;
-    for (int i=0; i<(trig.conditions.size()); i++){
-        if (trig.conditions[i].has.compare("yes") ==  0 ){
+    for (int i=0; i<(conditions.size()); i++){
+        if (conditions[i].has.compare("yes") ==  0 ){
             tempTrig = false;
-            Container owner = allContainers[trig.conditions[i].owner];
-            Item obj = allItems[trig.conditions[i].obj];
+            Container owner = allContainers[conditions[i].owner];
+            Item obj = allItems[conditions[i].obj];
             for(int x=0; x<(owner.items.size()); x++){
                 if (owner.items[x]->name.compare(obj.name) == 0){
                     tempTrig = true;
                 }
             }
         }
-        else if (trig.conditions[i].has.compare("no") ==  0){
-            Container owner = allContainers[trig.conditions[i].owner];
+        else if (conditions[i].has.compare("no") ==  0){
+            Container owner = allContainers[conditions[i].owner];
             Item obj = allItems[trig.conditions[i].obj];
             for(int x=0; x<(owner.items.size()); x++){
                 if (owner.items[x]->name.compare(obj.name) == 0){
@@ -76,14 +76,14 @@ bool checkTriggerCondition(Trigger trig){
         else{
             Container obj1;
             Item obj2;
-            if (allItems.find(trig.conditions[i].obj) == allItems.end()){
-                Container obj1 = allContainers[trig.conditions[i].obj];
+            if (allItems.find(conditions[i].obj) == allItems.end()){
+                Container obj1 = allContainers[conditions[i].obj];
             }
             else{
-                Item obj2 = allItems[trig.conditions[i].obj];
+                Item obj2 = allItems[conditions[i].obj];
             }
 
-            if (obj1.status.compare(trig.conditions[i].status) == 0 || obj2.status.compare(trig.conditions[i].status) == 0){
+            if (obj1.status.compare(conditions[i].status) == 0 || obj2.status.compare(conditions[i].status) == 0){
                 tempTrig = false;
             }
         }
@@ -100,7 +100,7 @@ bool isTriggered(string command) {
         for (int y=0; y<(currRoom->triggers[x].commands.size()); y++){
             // If the current command is in the trigger's commands
             if (currRoom->triggers[x].commands[y].compare(command) == 0){
-                triggered = checkTriggerCondition(currRoom->triggers[x]);
+                triggered = checkConditions(currRoom->triggers[x].conditions);
                 break;
             }
         }
@@ -585,7 +585,7 @@ int main(int argc, char* argv[] ){
                 if (roomChange == true){
                     cout << currRoom->descrip <<endl;
                     for (int x=0; x<(currRoom->triggers.size()); x++){
-                        bool triggered = checkTriggerCondition(currRoom->triggers[x]);
+                        bool triggered = checkCondition(currRoom->triggers[x].conditions);
                         if (triggered==true){
                                 cout << currRoom->triggers[x].print << endl;
                         }
@@ -754,7 +754,7 @@ int main(int argc, char* argv[] ){
 
                                     //checks if putting item in container sets off a container trigger
                                     for (int x=0; x<(currRoom->containers[k]->triggers.size()); x++){
-                                        triggered = checkTriggerCondition(currRoom->containers[k]->triggers[x]);
+                                        triggered = checkCondition(currRoom->containers[k]->triggers[x].conditions);
                                         if (triggered){
                                             cout << currRoom->containers[k]->triggers[x].print << endl;
                                             bool triggerAction = parseAction(currRoom->containers[k]->triggers[x].action);
@@ -817,6 +817,9 @@ int main(int argc, char* argv[] ){
                                     if(currRoom->creatures[j]->vulner[v] == itemName) {
                                         // The creature is vulnerable!
                                         foundVulner = true;
+                                        
+                                        // Check conditions
+                                        
                                         cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
                                         cout << currRoom->creatures[j]->attack.print << endl;
                                         for (int x = 0; x < currRoom->creatures[j]->attack.actions.size(); x++) {
