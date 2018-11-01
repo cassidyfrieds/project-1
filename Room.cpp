@@ -27,15 +27,15 @@ void Room::printRoom() const {
     cout << "Room type is: " << type << endl;
     cout << "Room containers:" << endl;
      for(int i = 0; i < containers.size(); i++) {
-                containers[i].printContainer();
+                containers[i]->printContainer();
         }      
     cout << "Room items:" << endl;
      for(int i = 0; i < items.size(); i++) {
-                items[i].printItem();
+                items[i]->printItem();
         }   
     cout << "Room creatures:" << endl;
      for(int i = 0; i < creatures.size(); i++) {
-                creatures[i].printCreature();
+                creatures[i]->printCreature();
         }    
     cout << "Room borders:" << endl;
      for(int i = 0; i < borders.size(); i++) {

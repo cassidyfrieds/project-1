@@ -6,3 +6,4 @@
 * A container will stay open once it has been open
 * The condition's `<owner>` will always be inside the container
 * There will not be items and containers with the same name
+* `<action>` will always be updating a container or item name to the new name
