@@ -54,10 +54,11 @@ vector<string> splitString(const string& s, char delimiter)
 bool checkCondition(vector<Condition> conditions){
     bool tempTrig = true;
     for (int i=0; i<(conditions.size()); i++){
-        if (conditions[i].has.compare("yes") ==  0 ){
+        if (conditions[i].has.compare("yes") ==  0){
             tempTrig = false;
             Container owner = allContainers[conditions[i].owner];
             Item obj = allItems[conditions[i].obj];
+            cout << owner.name << " must have " << obj.name << endl;
             for(int x=0; x<(owner.items.size()); x++){
                 if (owner.items[x]->name.compare(obj.name) == 0){
                     tempTrig = true;
@@ -66,7 +67,8 @@ bool checkCondition(vector<Condition> conditions){
         }
         else if (conditions[i].has.compare("no") ==  0){
             Container owner = allContainers[conditions[i].owner];
-            Item obj = allItems[trig.conditions[i].obj];
+            Item obj = allItems[conditions[i].obj];
+            cout << owner.name << " must not have " << obj.name << endl;
             for(int x=0; x<(owner.items.size()); x++){
                 if (owner.items[x]->name.compare(obj.name) == 0){
                     tempTrig = false;
@@ -78,14 +80,15 @@ bool checkCondition(vector<Condition> conditions){
             Item obj2;
             if (allItems.find(conditions[i].obj) == allItems.end()){
                 Container obj1 = allContainers[conditions[i].obj];
+                cout << obj1.name << " must be " << conditions[i].status << endl;
+                tempTrig = !(obj1.status.compare(conditions[i].status) == 0);
             }
             else{
                 Item obj2 = allItems[conditions[i].obj];
+                cout << obj2.name << " must be " << conditions[i].status << endl;
+                tempTrig = !(obj2.status.compare(conditions[i].status) == 0);
             }
 
-            if (obj1.status.compare(conditions[i].status) == 0 || obj2.status.compare(conditions[i].status) == 0){
-                tempTrig = false;
-            }
         }
     }
     return tempTrig;
@@ -100,7 +103,7 @@ bool isTriggered(string command) {
         for (int y=0; y<(currRoom->triggers[x].commands.size()); y++){
             // If the current command is in the trigger's commands
             if (currRoom->triggers[x].commands[y].compare(command) == 0){
-                triggered = checkConditions(currRoom->triggers[x].conditions);
+                triggered = checkCondition(currRoom->triggers[x].conditions);
                 break;
             }
         }
@@ -819,13 +822,17 @@ int main(int argc, char* argv[] ){
                                         foundVulner = true;
                                         
                                         // Check conditions
-                                        
-                                        cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
-                                        cout << currRoom->creatures[j]->attack.print << endl;
-                                        for (int x = 0; x < currRoom->creatures[j]->attack.actions.size(); x++) {
-                                            parseAction(currRoom->creatures[j]->attack.actions[x]);
+                                        if(!checkCondition(currRoom->creatures[j]->attack.conditions)) {
+                                            cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
+                                            cout << currRoom->creatures[j]->attack.print << endl;
+                                            for (int x = 0; x < currRoom->creatures[j]->attack.actions.size(); x++) {
+                                                parseAction(currRoom->creatures[j]->attack.actions[x]);
+                                            }
+                                            break;
                                         }
-                                        break;
+                                        else {
+                                            cout << "The " << creatureName << " is vulnerable, but " << itemName << " does not meet conditions " << endl;
+                                        }
                                     }
                                 }
                                 if(!foundVulner) {
