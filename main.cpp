@@ -116,88 +116,85 @@ bool parseAction(string action){
         return false;
     }
     bool actionComp = false;
-    using namespace std;
+
+    // Split action phrase into words
     istringstream iss(action);
     vector<string> tokens;
     copy(istream_iterator<string>(iss), istream_iterator<string>(), back_inserter(tokens));
+
+
     //check if add funciton
     if (tokens[0].compare("Add") == 0 && tokens.size()== 4){
         //get first object (can be container or item)
-        if (allItems.find(tokens[1]) == allItems.end()){
+        if (allItems.find(tokens[1]) != allItems.end()){
+            //it is an item
+            Item obj1 = allItems[tokens[1]];
+            //get second obj (can be container or room)
+            if (allContainers.find(tokens[3]) != allContainers.end()){
+                //it is a container
+                Container* obj2 = &allContainers[tokens[3]];
+                //adding item to container
+                obj2->items.push_back(&obj1);
+                actionComp = true;
+            }
+            else{
+                //canot be found in allContainers it is a room
+                Room* obj2 = &allRooms[tokens[3]];
+                //adding item to room
+                obj2->items.push_back(&obj1);
+                actionComp = true;
+            }
+        }
+        else {
             //canot be found in allItems it is a container
             Container obj1 = allContainers[tokens[1]];
             //if it is a container it must be added to a room
             Room* obj2 = &allRooms[tokens[3]];
             //adding container to room
-            //TODO add container to room
+            obj2->containers.push_back(&obj1);
             actionComp = true;
-            }
-        else{
-            //it is an item
-            Item obj1 = allItems[tokens[1]];
-            //get second obj (can be container or room)
-            if (allContainers.find(tokens[3]) == allContainers.end()){
-                //canot be found in allContainers it is a room
-                Room* obj2 = &allRooms[tokens[3]];
-                //adding item to room
-                //TODO add item to room
-                actionComp = true;
-            }
-            else{
-                //it is an container
-                Container* obj2 = &allContainers[tokens[3]];
-                //adding item to container
-                //TODO add item to container
-                actionComp = true;
-            }
         }
     }
 
     //check if delete function
     if (tokens[0].compare("Delete") == 0 && tokens.size()== 2){
-        if (allItems.find(tokens[1]) == allItems.end()){
-            //not an item
-            if (allContainers.find(tokens[1]) == allContainers.end()){
-                //not a container or item
-                if (allRooms.find(tokens[1]) == allRooms.end()){
-                    //not a container or item or room, must be a creature
-                    //TODO: delete creature
-                }
-                else{
-                    //must be a room, delete room
-                    Room obj = allRooms[tokens[1]];
-                    actionComp = Delete(obj);
-                }
-            }
-            else{
-                //must be a container
-                Container obj = allContainers[tokens[1]];
-                actionComp = Delete(obj);
-            }
-        }
-        else{
-            //must be a item
+        if (allItems.find(tokens[1]) != allItems.end()){
             Item obj = allItems[tokens[1]];
             actionComp = Delete(obj);
+        } 
+        else if (allContainers.find(tokens[1]) != allContainers.end()) {
+            Container obj = allContainers[tokens[1]];
+            actionComp = Delete(obj);
+        } 
+        else if (allRooms.find(tokens[1]) != allRooms.end()) {
+            Room obj = allRooms[tokens[1]];
+            actionComp = Delete(obj);
+        } 
+        else if (allCreatures.find(tokens[1]) != allCreatures.end()) {
+            Room obj = allRooms[tokens[1]];
+            actionComp = Delete(obj);
+        } 
+        else {
+            // Not found at all
+            cout << "ERROR: obj " << tokens[1] << " not found." << endl;
         }
     }
 
     //check if update function
     if (tokens[0].compare("Update") == 0 && tokens.size()== 4){
-        if (allItems.find(tokens[1]) == allItems.end()){
-            //not an item
-            if (allContainers.find(tokens[1]) == allContainers.end()){
-                //not a container or item, must be a creature, update his status
-                //TODO: update creature status;
-            }
-            else{
-                //is a container, update container status
-                //TODO: update container status;
-            }
-        }
-        else{
+        if (allItems.find(tokens[1]) != allItems.end()){
             //is a item
             Item obj = allItems[tokens[1]];
+            Update(obj, tokens[2]);
+        }
+        else if (allContainers.find(tokens[1]) != allContainers.end()){
+            //is a container, update container status
+            Container obj = allContainers[tokens[1]];
+            Update(obj, tokens[2]);
+        }
+        else {
+            //not a container or item, must be a creature, update his status!
+            Creature obj = allCreatures[tokens[1]];
             Update(obj, tokens[2]);
         }
     }
