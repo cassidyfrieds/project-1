@@ -23,9 +23,9 @@ class Room { //type is assumed to be 'regular' unless otherwise specified
         string status;
         string descrip;
         string type;
-        vector <Container> containers; //or <Containter>?
-        vector <Item> items;
-        vector <Creature> creatures;
+        vector <Container*> containers; //or <Containter>?
+        vector <Item*> items;
+        vector <Creature*> creatures;
         vector <Trigger> triggers;
         vector <Border> borders; //need to make array of borders bc more than 1
         //look at notes in room.cpp and main!! 
