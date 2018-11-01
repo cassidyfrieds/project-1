@@ -91,7 +91,7 @@ bool checkTriggerCondition(Trigger trig){
     return tempTrig;
 }
 
-bool isTriggered(Room* currRoom, string command) {
+bool isTriggered(string command) {
     //check if triggered
     bool triggered = false;
     // For each of the room's triggers
@@ -111,6 +111,95 @@ bool isTriggered(Room* currRoom, string command) {
     return triggered;
 }
 
+bool parseAction(string action){
+    bool actionComp = false;
+    using namespace std;
+    istringstream iss(action);
+    vector<string> tokens;
+    copy(istream_iterator<string>(iss), istream_iterator<string>(), back_inserter(tokens));
+    //check if add funciton
+    if (tokens[0].compare("Add") == 0 && tokens.size()== 4){
+        //get first object (can be container or item)
+        if (allItems.find(tokens[1]) == allItems.end()){
+            //canot be found in allItems it is a container
+            Container obj1 = allContainers[tokens[1]];
+            //if it is a container it must be added to a room
+            Room obj2 = allRooms[tokens[3]];
+            //adding container to room
+            Add(obj1, obj2);
+            actionComp = true;
+            }
+        else{
+            //it is an item
+            Item obj1 = allItems[tokens[1]];
+            //get second obj (can be container or room)
+            if (allContainers.find(tokens[3]) == allContainers.end()){
+                //canot be found in allContainers it is a room
+                Room obj2 = allRooms[tokens[3]];
+                //adding item to room               
+                Add(obj1, obj2);
+                actionComp = true;
+            }
+            else{
+                //it is an container
+                Container obj2 = allContainers[tokens[3]];
+                //adding item to container
+                Add(obj1, obj2);
+                actionComp = true;
+            }
+        }
+    }
+
+    //check if delete function
+    if (tokens[0].compare("Delete") == 0 && tokens.size()== 2){
+        if (allItems.find(tokens[1]) == allItems.end()){
+            //not an item
+            if (allContainers.find(tokens[1]) == allContainers.end()){
+                //not a container or item 
+                if (allRooms.find(tokens[1]) == allRooms.end()){
+                    //not a container or item or room, must be a creature
+                    //TODO: delete creature
+                }
+                else{
+                    //must be a room, delete room
+                    Room obj = allRooms[tokens[1]];
+                    actionComp = Delete(obj);
+                }
+            }
+            else{
+                //must be a container
+                Container obj = allContainers[tokens[1]];
+                actionComp = Delete(obj);
+            }
+        }
+        else{
+            //must be a item
+            Item obj = allItems[tokens[1]];
+            actionComp = Delete(obj);
+        }
+    }
+
+    //check if update function
+    if (tokens[0].compare("Update") == 0 && tokens.size()== 4){
+        if (allItems.find(tokens[1]) == allItems.end()){
+            //not an item
+            if (allContainers.find(tokens[1]) == allContainers.end()){
+                //not a container or item, must be a creature, update his status
+                //TODO: update creature status;
+            }
+            else{
+                //is a container, update container status
+                //TODO: update container status;
+            }
+        }
+        else{
+            //is a container
+            //TODO: update container status;
+        }
+    }
+
+    return actionComp;
+}
 
 int main(int argc, char* argv[] ){
 
@@ -446,7 +535,6 @@ int main(int argc, char* argv[] ){
     }
 
     // Make current room
-    Room* currRoom = &allRooms["Entrance"];
     currRoom = &allRooms["Entrance"];
     //currRoom->printRoom();
     cout << currRoom->descrip <<endl;
@@ -547,6 +635,8 @@ int main(int argc, char* argv[] ){
                             if(currRoom->containers[i].items[j].name == itemName) {
                                 allContainers["inventory"].items.push_back(currRoom->containers[i].items[j]);
                                 currRoom->containers[i].items.erase(currRoom->containers[i].items.begin() + j);
+                                //update container in all container
+                                allContainers[currRoom->containers[i].name].items.erase(allContainers[currRoom->containers[i].name].items.begin()+j);
                                 found = true;
                                 break;
                             }
@@ -586,7 +676,7 @@ int main(int argc, char* argv[] ){
                             foundContainer = true; //container is found within room
                             Container* temp = &(currRoom->containers[i]);
                             temp->open = true; //container was opened
-
+                            allContainers[temp->name].open = true; //updates in allContainers
                             if(temp->items.empty()) { //container is empty
                                 cout << temp->name << " is empty. " << endl;
                             }
@@ -662,6 +752,8 @@ int main(int argc, char* argv[] ){
                                 if(currRoom->containers[k].open) {
                                     currRoom->containers[k].items.push_back(allContainers["inventory"].items[i]);
                                     allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + k);
+                                    //updating said container so that trigger can be checked
+                                    allContainers[containerName].items.push_back(allItems[itemName]);
                                     cout << "Item " << itemName <<  " added to " << containerName << "." << endl;
                                     // TODO: do we need to check if this opens the container?
 
@@ -881,12 +973,14 @@ bool Update(Creature& creature, string status){
     return true;
 }
 bool Update(Item& item, string status){
+    item.status = status;
     allItems[item.name].status = status;
     cout<<"update item"<<endl;
     return true;
 }
 
 /* Game Over */
+void GameOver(bool over) {
     if(over == true){
         cout<< "Victory!" << endl;
     }
