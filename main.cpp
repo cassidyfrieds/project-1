@@ -796,7 +796,7 @@ int main(int argc, char* argv[] ){
                     cout << itemName << " not in inventory." << endl;
                 }
             }
-            else if (key == "attack" && commands.size() > 3) {
+            else if (key == "attack" && commands.size() > 3 && commands[2] == "with") {
                 // prints “You assault the (creature) with the (item).” and executes “attack” elements
                 // if item matches creature’s “vulnerability” and existing conditions are met
                 string creatureName = commands[1];
@@ -806,32 +806,34 @@ int main(int argc, char* argv[] ){
                 for(int i = 0; !foundItem && i < allContainers["inventory"].items.size(); i++) {
                     if(allContainers["inventory"].items[i]->name == itemName) {
                         foundItem = true;
-                        // Check if creature in room
+                        
                         for(int j = 0; !foundCreature && j < currRoom->creatures.size(); j++) {
-                            /*
-                            if(currRoom->creatures[i]->name == creatureName) {
+                            if(currRoom->creatures[j]->name == creatureName) {
+                                // The creature is in the room!
                                 foundCreature = true;
-                                for(int v = 0; !foundVulner && v < currRoom->creatures[i]->vulner.size(); v++) {
-                                    if(currRoom->creatures[i]->vulner[v] == itemName) {
+
+                                for(int v = 0; !foundVulner && v < allCreatures[creatureName].vulner.size(); v++) {
+                                    if(allCreatures[creatureName].vulner[v] == itemName) {
                                         // The creature is vulnerable!
                                         foundVulner = true;
                                         cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
-                                        //if item matches vulnerability, check the conditions > print > action 
-                                        // (similar to how trigger was done for put container)
-                                        for (int x = 0; x < currRoom->creatures[i]->attack.actions.size(); x++) {
-                                            parseAction(currRoom->creatures[i]->attack.actions[x]);
+                                        for (int x = 0; x < allCreatures[creatureName].attack.actions.size(); x++) {
+                                            parseAction(allCreatures[creatureName].attack.actions[x]);
                                         }
+                                        break;
                                     }
                                 }
                                 if(!foundVulner) {
                                     cout << "The " << creatureName << " is not vulnerable to " << itemName << endl;
                                 }
+                                break;
+
                             }
-                            */
                         }
                         if(!foundCreature) {
                             cout << creatureName << " not in room." << endl;
                         }
+                        break;
                     }
                 }
                 if(!foundItem) {
