@@ -25,10 +25,10 @@ map<std::string, Room> allRooms;
 Room* currRoom;
 
 //behind the scenes commands declarations
-void Add(Item, Room&);
-void Add(Creature, Room&);
-void Add(Item, Container&);
-void Add(Container, Room&);
+bool Add(Item, Room&);
+bool Add(Creature, Room&);
+bool Add(Item, Container&);
+bool Add(Container, Room&);
 bool Delete(Room&);
 bool Delete(Item&);
 bool Delete(Container&);
@@ -128,31 +128,28 @@ bool parseAction(string action){
         //get first object (can be container or item)
         if (allItems.find(tokens[1]) != allItems.end()){
             //it is an item
-            Item obj1 = allItems[tokens[1]];
+            Item* obj1 = &allItems[tokens[1]];
             //get second obj (can be container or room)
             if (allContainers.find(tokens[3]) != allContainers.end()){
                 //it is a container
                 Container* obj2 = &allContainers[tokens[3]];
                 //adding item to container
-                obj2->items.push_back(&obj1);
-                actionComp = true;
+                actionComp = Add(obj1, obj2);
             }
             else{
                 //canot be found in allContainers it is a room
                 Room* obj2 = &allRooms[tokens[3]];
                 //adding item to room
-                obj2->items.push_back(&obj1);
-                actionComp = true;
+                actionComp = Add(obj1, obj2);
             }
         }
         else {
             //canot be found in allItems it is a container
-            Container obj1 = allContainers[tokens[1]];
+            Container* obj1 = &allContainers[tokens[1]];
             //if it is a container it must be added to a room
             Room* obj2 = &allRooms[tokens[3]];
             //adding container to room
-            obj2->containers.push_back(&obj1);
-            actionComp = true;
+            actionComp = Add(obj1, obj2);
         }
     }
 
@@ -184,18 +181,18 @@ bool parseAction(string action){
     if (tokens[0].compare("Update") == 0 && tokens.size()== 4){
         if (allItems.find(tokens[1]) != allItems.end()){
             //is a item
-            Item obj = allItems[tokens[1]];
-            Update(obj, tokens[2]);
+            Item* obj = &allItems[tokens[1]];
+            actionComp = Update(obj, tokens[2]);
         }
         else if (allContainers.find(tokens[1]) != allContainers.end()){
             //is a container, update container status
-            Container obj = allContainers[tokens[1]];
-            Update(obj, tokens[2]);
+            Container* obj = &allContainers[tokens[1]];
+            actionComp = Update(obj, tokens[2]);
         }
         else {
             //not a container or item, must be a creature, update his status!
-            Creature obj = allCreatures[tokens[1]];
-            Update(obj, tokens[2]);
+            Creature* obj = &allCreatures[tokens[1]];
+            actionComp = Update(obj, tokens[2]);
         }
     }
 
@@ -842,34 +839,34 @@ BEHIND THE SCENES COMMANDS
 
 */
 /* Add (object) to (room/container) */
-
-
 //creates instance of object with a specific owner
 //(does not work on the player's inventory).
-void Add(Item* itemA, Room* roomA) {
-    allRooms[roomA->name].items.push_back(itemA);
-    //roomA.items.push_back(itemA);
+bool Add(Item* itemA, Room* roomA) {
+    roomA->items.push_back(itemA);
+    return true;
 }
-void Add(Creature* creatureA, Room* roomA) {
-    allRooms[roomA->name].creatures.push_back(creatureA);
-    //roomA.creatures.push_back(creatureA);
+bool Add(Creature* creatureA, Room* roomA) {
+    roomA->creatures.push_back(creatureA);
+    return true;
 }
-void Add(Container* contA, Room* roomA) {
-    allRooms[roomA->name].containers.push_back(contA);
-    //roomA.containers.push_back(contA);
-}
-
-void Add(Item* itemA, Container* containerA) {
-    allContainers[containerA->name].items.push_back(itemA);
-    //containerA.items.push_back(itemA);
+bool Add(Container* contA, Room* roomA) {
+    roomA->containers.push_back(contA);
+    return true;
 }
 
+bool Add(Item* itemA, Container* containerA) {
+    containerA->items.push_back(itemA);
+    return true;
+}
 
 
-//Delete (object) – removes object references from game, but the item can still be
-//brought back into the game using the 'Add' command. If a room is removed other rooms
-//will have references to the removed room as a 'border' that was removed, but there
-//is no means for adding a room back in.
+
+/*
+Delete (object) – removes object references from game, but the item can still be
+brought back into the game using the 'Add' command. If a room is removed other rooms
+will have references to the removed room as a 'border' that was removed, but there
+is no means for adding a room back in.
+*/
 
 bool Delete(Room& room){ //update borders?
     return true;
@@ -951,35 +948,25 @@ bool Delete(Creature& creature, string creatName, Room& currRoom){
     return found;
 }
 
-
-
-/* Update (object) to (status) */
-
-//Update (object) to (status) – creates new status for object that can be checked by triggers //idk if these need to return anything????
-//send refrence
-    // Room* currRoom = &allRooms["Entrance"];
-    // call Update(*currRoom, "string status")
-bool Update(Room& room, string status){
-    room.status = status;
-    cout<<"update room"<<endl;
+//Update (object) to (status) – creates new status for object that can be checked by triggers 
+bool Update(Room* room, string status){
+    room->status = status;
+    cout << "update room status to " << status << endl;
     return true; //maybe check if it worked and return true if so
 }
-bool Update(Container& cont, string status){
-    cont.status = status; //update status of container
-    allContainers[cont.name].status = status; //update all containers map
-    cout<<"update container"<<endl;
+bool Update(Container* cont, string status){
+    cont->status = status;
+    cout << "update container status to " << status << endl;
     return true;
 }
-bool Update(Creature& creature, string status){
-    creature.status = status;
-    allCreatures[creature.name].status = status;
-    cout<<"update creature"<<endl;
+bool Update(Creature* creature, string status){
+    creature->status = status;
+    cout << "update creature status to " << status << endl;
     return true;
 }
-bool Update(Item& item, string status){
-    //item.status = status;
-    allItems[item.name].status = status;
-    //cout<<"update item"<<endl;
+bool Update(Item* item, string status){
+    item->status = status;
+    cout << "update item status to " << status << endl;
     return true;
 }
 
