@@ -813,13 +813,14 @@ int main(int argc, char* argv[] ){
                                 // The creature is in the room!
                                 foundCreature = true;
 
-                                for(int v = 0; !foundVulner && v < allCreatures[creatureName].vulner.size(); v++) {
-                                    if(allCreatures[creatureName].vulner[v] == itemName) {
+                                for(int v = 0; !foundVulner && v < currRoom->creatures[j]->vulner.size(); v++) {
+                                    if(currRoom->creatures[j]->vulner[v] == itemName) {
                                         // The creature is vulnerable!
                                         foundVulner = true;
                                         cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
-                                        for (int x = 0; x < allCreatures[creatureName].attack.actions.size(); x++) {
-                                            parseAction(allCreatures[creatureName].attack.actions[x]);
+                                        cout << currRoom->creatures[j]->attack.print << endl;
+                                        for (int x = 0; x < currRoom->creatures[j]->attack.actions.size(); x++) {
+                                            parseAction(currRoom->creatures[j]->attack.actions[x]);
                                         }
                                         break;
                                     }
@@ -904,9 +905,9 @@ bool Delete(Room* room) {
     // TODO: decide if we need to delete it
 
     if(found) {
-        cout << "Room " << room->name << " deleted from allRooms." << endl;
+        //cout << "Room " << room->name << " deleted from allRooms." << endl;
     } else {
-        cout << room->name << " not found." << endl;
+        //cout << room->name << " not found." << endl;
     }
     return found;
 }
@@ -938,9 +939,9 @@ bool Delete(Item* item) {
     // TODO: decide if we need to delete it
 
     if(found) {
-        cout << "Item " << itemName << " deleted from room/container." << endl;
+        //cout << "Item " << itemName << " deleted from room/container." << endl;
     } else {
-        cout << itemName << " not found." << endl;
+        //cout << itemName << " not found." << endl;
     }
     return found;
 }
@@ -960,9 +961,9 @@ bool Delete(Container* container){
     // TODO: decide if we need to delete it
 
     if(found) {
-        cout << "Container " << container->name << " deleted from room." << endl;
+        //cout << "Container " << container->name << " deleted from room." << endl;
     } else {
-        cout << container->name << " not found." << endl;
+        //cout << container->name << " not found." << endl;
     }
     return found;
 }
@@ -982,9 +983,9 @@ bool Delete(Creature* creature){
     // TODO: decide if we need to delete it
 
     if(found) {
-        cout << "Creature " << creature->name << " deleted from room." << endl;
+        //cout << "Creature " << creature->name << " deleted from room." << endl;
     } else {
-        cout << creature->name << " not found." << endl;
+        //cout << creature->name << " not found." << endl;
     }
     return found;
 }
