@@ -175,21 +175,21 @@ bool parseAction(string action){
     }
 
     //check if update function
-    if (tokens[0].compare("Update") == 0 && tokens.size()== 4){
+    if (tokens[0].compare("Update") == 0 && tokens.size() == 4){
         if (allItems.find(tokens[1]) != allItems.end()){
             //is a item
             Item* obj = &allItems[tokens[1]];
-            actionComp = Update(obj, tokens[2]);
+            actionComp = Update(obj, tokens[3]);
         }
         else if (allContainers.find(tokens[1]) != allContainers.end()){
             //is a container, update container status
             Container* obj = &allContainers[tokens[1]];
-            actionComp = Update(obj, tokens[2]);
+            actionComp = Update(obj, tokens[3]);
         }
         else {
             //not a container or item, must be a creature, update his status!
             Creature* obj = &allCreatures[tokens[1]];
-            actionComp = Update(obj, tokens[2]);
+            actionComp = Update(obj, tokens[3]);
         }
     }
 
@@ -789,7 +789,7 @@ int main(int argc, char* argv[] ){
                         cout << allContainers["inventory"].items[i]->turnon.print << endl;
                         //parse the action
                         bool action = parseAction(allContainers["inventory"].items[i]->turnon.action);
-                        cout << allContainers["inventory"].items[i]->status << endl;
+                        //cout << allContainers["inventory"].items[i]->status << endl;
                     }
                 }
                 if(!foundItem) {
@@ -802,18 +802,32 @@ int main(int argc, char* argv[] ){
                 string creatureName = commands[1];
                 string itemName = commands[3];
                 // Check if the item is in the inventory
-                bool foundItem = false, foundCreature = false;
+                bool foundItem = false, foundCreature = false, foundVulner = false;
                 for(int i = 0; !foundItem && i < allContainers["inventory"].items.size(); i++) {
                     if(allContainers["inventory"].items[i]->name == itemName) {
                         foundItem = true;
                         // Check if creature in room
                         for(int j = 0; !foundCreature && j < currRoom->creatures.size(); j++) {
+                            /*
                             if(currRoom->creatures[i]->name == creatureName) {
                                 foundCreature = true;
-                                // TODO: CHECK VULNERABILITY
-                                cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
-                                //if item matches vulnerability, check the conditions > print > action (similar to how trigger was done for put container)
+                                for(int v = 0; !foundVulner && v < currRoom->creatures[i]->vulner.size(); v++) {
+                                    if(currRoom->creatures[i]->vulner[v] == itemName) {
+                                        // The creature is vulnerable!
+                                        foundVulner = true;
+                                        cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
+                                        //if item matches vulnerability, check the conditions > print > action 
+                                        // (similar to how trigger was done for put container)
+                                        for (int x = 0; x < currRoom->creatures[i]->attack.actions.size(); x++) {
+                                            parseAction(currRoom->creatures[i]->attack.actions[x]);
+                                        }
+                                    }
+                                }
+                                if(!foundVulner) {
+                                    cout << "The " << creatureName << " is not vulnerable to " << itemName << endl;
+                                }
                             }
+                            */
                         }
                         if(!foundCreature) {
                             cout << creatureName << " not in room." << endl;
@@ -991,7 +1005,7 @@ bool Update(Creature* creature, string status){
 }
 bool Update(Item* item, string status){
     item->status = status;
-    cout << "update item status to " << status << endl;
+    //cout << "update item status to " << status << endl;
     return true;
 }
 
