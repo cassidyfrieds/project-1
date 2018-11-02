@@ -58,7 +58,7 @@ bool checkCondition(vector<Condition> conditions){
             tempTrig = false;
             Container owner = allContainers[conditions[i].owner];
             Item obj = allItems[conditions[i].obj];
-            cout << owner.name << " must have " << obj.name << endl;
+           // cout << owner.name << " must have " << obj.name << endl;
             for(int x=0; x<(owner.items.size()); x++){
                 if (owner.items[x]->name.compare(obj.name) == 0){
                     tempTrig = true;
@@ -68,7 +68,7 @@ bool checkCondition(vector<Condition> conditions){
         else if (conditions[i].has.compare("no") ==  0){
             Container owner = allContainers[conditions[i].owner];
             Item obj = allItems[conditions[i].obj];
-            cout << owner.name << " must not have " << obj.name << endl;
+            //cout << owner.name << " must not have " << obj.name << endl;
             for(int x=0; x<(owner.items.size()); x++){
                 if (owner.items[x]->name.compare(obj.name) == 0){
                     tempTrig = false;
@@ -78,15 +78,16 @@ bool checkCondition(vector<Condition> conditions){
         else{
             Container obj1;
             Item obj2;
+            tempTrig = false;
             if (allItems.find(conditions[i].obj) == allItems.end()){
                 Container obj1 = allContainers[conditions[i].obj];
-                cout << obj1.name << " must be " << conditions[i].status << endl;
-                tempTrig = !(obj1.status.compare(conditions[i].status) == 0);
+                //cout << obj1.name << " must be " << conditions[i].status << endl;
+                tempTrig = (obj1.status.compare(conditions[i].status) == 0);
             }
             else{
                 Item obj2 = allItems[conditions[i].obj];
-                cout << obj2.name << " must be " << conditions[i].status << endl;
-                tempTrig = !(obj2.status.compare(conditions[i].status) == 0);
+                //cout << obj2.name << " must be " << conditions[i].status << endl;
+                tempTrig = (obj2.status.compare(conditions[i].status) == 0);
             }
 
         }
@@ -158,19 +159,19 @@ bool parseAction(string action){
         if (allItems.find(tokens[1]) != allItems.end()){
             Item* obj = &allItems[tokens[1]];
             actionComp = Delete(obj);
-        } 
+        }
         else if (allContainers.find(tokens[1]) != allContainers.end()) {
             Container* obj = &allContainers[tokens[1]];
             actionComp = Delete(obj);
-        } 
+        }
         else if (allRooms.find(tokens[1]) != allRooms.end()) {
             Room* obj = &allRooms[tokens[1]];
             actionComp = Delete(obj);
-        } 
+        }
         else if (allCreatures.find(tokens[1]) != allCreatures.end()) {
             Creature* obj = &allCreatures[tokens[1]];
             actionComp = Delete(obj);
-        } 
+        }
         else {
             // Not found at all
             cout << "ERROR: obj " << tokens[1] << " not found." << endl;
@@ -258,6 +259,10 @@ int main(int argc, char* argv[] ){
             //string trigger.print
             if(trigger_node->first_node("print")) {
                 tempTrigger.print = trigger_node->first_node("print")->value();
+            }
+            //string trigger.action
+            if(trigger_node->first_node("action")) {
+                tempTrigger.action = trigger_node->first_node("action")->value();
             }
             //vector <string> trigger.commands;
             for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
@@ -347,6 +352,10 @@ int main(int argc, char* argv[] ){
             if(trigger_node->first_node("print")) {
                 tempTrigger.print = trigger_node->first_node("print")->value();
             }
+            //string trigger.action
+            if(trigger_node->first_node("action")) {
+                tempTrigger.action = trigger_node->first_node("action")->value();
+            }
             //vector <string> trigger.commands;
             for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
                 tempTrigger.commands.push_back(command_node->value());
@@ -410,6 +419,10 @@ int main(int argc, char* argv[] ){
             //string trigger.print
             if(trigger_node->first_node("print")) {
                 tempTrigger.print = trigger_node->first_node("print")->value();
+            }
+            //string trigger.action
+            if(trigger_node->first_node("action")) {
+                tempTrigger.action = trigger_node->first_node("action")->value();
             }
             //vector <string> trigger.commands;
             for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
@@ -501,6 +514,10 @@ int main(int argc, char* argv[] ){
             if(trigger_node->first_node("print")) {
                 tempTrigger.print = trigger_node->first_node("print")->value();
             }
+            //string trigger.action
+            if(trigger_node->first_node("action")) {
+                tempTrigger.action = trigger_node->first_node("action")->value();
+            }
             //vector <string> trigger.commands;
             for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
                 tempTrigger.commands.push_back(command_node->value());
@@ -537,15 +554,14 @@ int main(int argc, char* argv[] ){
     READ IN sample.txt file and sample.out file
 
     */
-    //ofstream in_file;
+   
     ifstream in_file;
     in_file.open("samples/containersample.txt");
 
-    //ofstream cout;
     ifstream out_file;
-    out_file.open("samples/out.txt");
+    out_file.open("samples/out.txt"); 
         //^DELETE - for automation
-    /*         */ 
+    /*         */
 
     // Make current room
     currRoom = &allRooms["Entrance"];
@@ -605,12 +621,6 @@ int main(int argc, char* argv[] ){
                 }
                 if (roomChange == true){
                     cout << currRoom->descrip <<endl;
-                    for (int x=0; x<(currRoom->triggers.size()); x++){
-                        bool triggered = checkCondition(currRoom->triggers[x].conditions);
-                        if (triggered==true){
-                                cout << currRoom->triggers[x].print << endl;
-                        }
-                    }
                 }
                 else{
                     cout << "Can't go that way." << endl;
@@ -641,6 +651,7 @@ int main(int argc, char* argv[] ){
                         allContainers["inventory"].items.push_back(currRoom->items.at(i));
                         currRoom->items.erase(currRoom->items.begin() + i);
                         found = true;
+
                         break;
                     }
                 }
@@ -651,9 +662,18 @@ int main(int argc, char* argv[] ){
                             if(currRoom->containers[i]->items[j]->name == itemName) {
                                 allContainers["inventory"].items.push_back(currRoom->containers[i]->items[j]);
                                 currRoom->containers[i]->items.erase(currRoom->containers[i]->items.begin() + j);
-                                //update container in all container
-                                //allContainers[currRoom->containers[i].name].items.erase(allContainers[currRoom->containers[i].name].items.begin()+j);
                                 found = true;
+
+                            //checks if taking from container sets off container trigger
+                             bool triggered;
+                            for (int x=0; x<(currRoom->containers[i]->triggers.size()); x++){
+                                triggered = checkCondition(currRoom->containers[i]->triggers[x].conditions);
+                                if (triggered){
+                                     cout << currRoom->containers[i]->triggers[x].print << endl;
+                                    bool triggerAction = parseAction(currRoom->containers[i]->triggers[x].action);
+                                 }
+                             }
+
                                 break;
                             }
                         }
@@ -663,7 +683,7 @@ int main(int argc, char* argv[] ){
                     cout << "Item " << itemName << " added to inventory." << endl;
                 } else {
                     //cout << itemName << " not found." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error1" << endl;
                 }
             }
             else if (key == "open" && commands.size() > 1) {
@@ -676,12 +696,13 @@ int main(int argc, char* argv[] ){
                     // Open Exit
                     if(currRoom->type == "exit") {
                         over = true;
-                        GameOver(over); //TODO: dont call this here, its behind the scenes so need to parse it 
+                        //GameOver(over); //TODO: dont call this here, its behind the scenes so need to parse it
                         cout << "Game Over" << endl;
                         return 0;
                     }
                     else {
-                        cout << "This is not an exit." << endl;
+                        //cout << "This is not an exit." << endl;
+                        cout << "Error" << endl;
                     }
                 }
                 else {
@@ -705,12 +726,23 @@ int main(int argc, char* argv[] ){
                                 }
                                 cout << '.' << endl;
                             }
+
+                            //checks if opening a container sets off container trigger
+                            bool triggered;
+                             for (int x=0; x<(temp->triggers.size()); x++){
+                                 triggered = checkCondition(temp->triggers[x].conditions);
+                                  if (triggered){
+                                     cout << temp->triggers[x].print << endl;
+                                    bool triggerAction = parseAction(temp->triggers[x].action);
+                                  }
+                             }
+
                             break;
                         }
                     }
                     if(!foundContainer){ //if container is not found
                         //cout << "Container not found" << endl; //or print error
-                        cout << "Error" << endl;
+                        cout << "Error2" << endl;
                     }
                 }
             }
@@ -732,7 +764,7 @@ int main(int argc, char* argv[] ){
                 }
                 if(!found) {
                     //cout << itemName << " not in inventory." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error3" << endl;
                 }
             }
             else if (key == "drop" && commands.size() > 1) {
@@ -746,15 +778,26 @@ int main(int argc, char* argv[] ){
                         allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + i);
                         found = true;
                         cout << itemName << " dropped." << endl;
+
+                        //checks if dropping item sets off a room trigger
+                         bool triggered;
+                         for (int x=0; x<(currRoom->triggers.size()); x++){
+                             triggered = checkCondition(currRoom->triggers[x].conditions);
+                           if (triggered){
+                                cout << currRoom->triggers[x].print << endl;
+                                 bool triggerAction = parseAction(currRoom->triggers[x].action);
+                             }
+                        }
+
                         break;
                     }
                 }
                 if(!found) {
                     //cout << itemName << " not found." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error4" << endl;
                 }
             }
-            else if (key == "put" && commands.size() > 3) {
+            else if (key == "put" && commands.size() > 3) { //TODO: for put command - be able to put an item in a container (end of containersample)
                 // adds the item to the containers inventory and and prints “Item (item) added to (container).
                 string itemName = commands[1];
                 string containerName = commands[3];
@@ -788,13 +831,13 @@ int main(int argc, char* argv[] ){
                                     break;
                                 } else {
                                     //cout << containerName << " is closed." << endl;
-                                    cout << "Error" << endl;
+                                    cout << "Error5" << endl;
                                 }
                             }
                         }
                         if(!foundContainer) {
                             //cout << containerName << " isn't in this room." << endl;
-                            cout << "Error" << endl;
+                            cout << "Error6" << endl;
                         } else {
                             break;
                         }
@@ -802,7 +845,7 @@ int main(int argc, char* argv[] ){
                 }
                 if(!foundItem) {
                     //cout << itemName << " not in inventory." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error7" << endl;
                 }
             }
             else if (key == "turn" && commands.size() > 2 && commands[1] == "on") {
@@ -818,25 +861,65 @@ int main(int argc, char* argv[] ){
                         //parse the action
                         bool action = parseAction(allContainers["inventory"].items[i]->turnon.action);
                         //cout << allContainers["inventory"].items[i]->status << endl;
+
+                        //checks if turning on item sets off an item trigger
+                        bool triggered;
+                        for (int x=0; x<(allContainers["inventory"].items[i]->triggers.size()); x++){
+                            triggered = checkCondition(allContainers["inventory"].items[i]->triggers[x].conditions);
+                            if (triggered){
+                                 cout << allContainers["inventory"].items[i]->triggers[x].print << endl;
+                                bool triggerAction = parseAction(allContainers["inventory"].items[i]->triggers[x].action);
+                            }
+                        }
+
+                        //checks if turnon on item sets of creature in the room trigger
+                        for (int x=0; x<(currRoom->creatures.size()); x++){
+                            for (int y=0; y<(currRoom->creatures[x]->triggers.size()); y++){
+                                triggered = checkCondition(currRoom->creatures[x]->triggers[y].conditions);
+                                if (triggered){
+                                    cout << currRoom->creatures[x]->triggers[y].print << endl;
+                                    bool triggerAction = parseAction(currRoom->creatures[x]->triggers[y].action);
+                                    if (currRoom->creatures[x]->triggers[y].type.compare("single") == 0){
+                                        currRoom->creatures[x]->triggers[y].print = "";
+                                    }
+                                }
+                            }
+                        }
+
+                        //checks if turnon on item sets of container in the room trigger
+                        for (int x=0; x<(currRoom->containers.size()); x++){
+                            for (int y=0; y<(currRoom->containers[x]->triggers.size()); y++){
+                                triggered = checkCondition(currRoom->containers[x]->triggers[y].conditions);
+                                if (triggered){
+                                    cout << currRoom->containers[x]->triggers[y].print << endl;
+                                    bool triggerAction = parseAction(currRoom->containers[x]->triggers[y].action);
+                                    if (currRoom->containers[x]->triggers[y].type.compare("single") == 0){
+                                        currRoom->containers[x]->triggers[y].print = "";
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
                 if(!foundItem) {
                     //cout << itemName << " not in inventory." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error8" << endl;
                 }
+
             }
             else if (key == "attack" && commands.size() > 3 && commands[2] == "with") {
                 // prints “You assault the (creature) with the (item).” and executes “attack” elements
                 // if item matches creature’s “vulnerability” and existing conditions are met
                 string creatureName = commands[1];
                 string itemName = commands[3];
-                
+
                 // Check if the item is in the inventory
                 bool foundItem = false, foundCreature = false, foundVulner = false;
                 for(int i = 0; !foundItem && i < allContainers["inventory"].items.size(); i++) {
                     if(allContainers["inventory"].items[i]->name == itemName) {
                         foundItem = true;
-                        
+
                         for(int j = 0; !foundCreature && j < currRoom->creatures.size(); j++) {
                             if(currRoom->creatures[j]->name == creatureName) {
                                 // The creature is in the room!
@@ -846,15 +929,31 @@ int main(int argc, char* argv[] ){
                                     if(currRoom->creatures[j]->vulner[v] == itemName) {
                                         // The creature is vulnerable!
                                         foundVulner = true;
-                                        
+
                                         // Check conditions
-                                        if(!checkCondition(currRoom->creatures[j]->attack.conditions)) {
+                                        if(checkCondition(currRoom->creatures[j]->attack.conditions)) {
                                             cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
                                             cout << currRoom->creatures[j]->attack.print << endl;
                                             for (int x = 0; x < currRoom->creatures[j]->attack.actions.size(); x++) {
                                                 parseAction(currRoom->creatures[j]->attack.actions[x]);
                                             }
+
+                                            //checks if attacking creature sets off a creature trigger
+                                            bool triggered;
+                                            for (int x=0; x<(currRoom->creatures[j]->triggers.size()); x++){
+                                                 triggered = checkCondition(currRoom->creatures[j]->triggers[x].conditions);
+                                                 if (triggered){
+                                                    cout << currRoom->creatures[j]->triggers[x].print << endl;
+                                                    bool triggerAction = parseAction(currRoom->creatures[j]->triggers[x].action);
+                                                    if (currRoom->creatures[j]->triggers[x].type.compare("single") == 0){
+                                                        currRoom->creatures[j]->triggers[x].print = "";
+                                                    }
+                                                 }
+                                            }
+
+
                                             break;
+
                                         }
                                         else {
                                             cout << "The " << creatureName << " is vulnerable, but " << itemName << " does not meet conditions " << endl;
@@ -868,18 +967,19 @@ int main(int argc, char* argv[] ){
                             }
                         }
                         if(!foundCreature) {
-                            cout << creatureName << " not in room." << endl;
+                            //cout << creatureName << " not in room." << endl;
+                            cout << "Error11" << endl;
                         }
                         break;
                     }
                 }
                 if(!foundItem) {
                     //cout << itemName << " not in inventory." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error9" << endl;
                 }
             }
             else {
-                cout << "Error" << endl;
+                cout << "Error10" << endl;
             }
         }
     }
@@ -1027,20 +1127,20 @@ bool Delete(Creature* creature){
     return found;
 }
 
-//Update (object) to (status) – creates new status for object that can be checked by triggers 
+//Update (object) to (status) – creates new status for object that can be checked by triggers
 bool Update(Room* room, string status){
     room->status = status;
-    cout << "update room status to " << status << endl;
+    //cout << "update room status to " << status << endl;
     return true;
 }
 bool Update(Container* cont, string status){
     cont->status = status;
-    cout << "update container status to " << status << endl;
+    //cout << "update container status to " << status << endl;
     return true;
 }
 bool Update(Creature* creature, string status){
     creature->status = status;
-    cout << "update creature status to " << status << endl;
+    //cout << "update creature status to " << status << endl;
     return true;
 }
 bool Update(Item* item, string status){
