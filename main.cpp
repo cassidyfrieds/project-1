@@ -159,19 +159,19 @@ bool parseAction(string action){
         if (allItems.find(tokens[1]) != allItems.end()){
             Item* obj = &allItems[tokens[1]];
             actionComp = Delete(obj);
-        } 
+        }
         else if (allContainers.find(tokens[1]) != allContainers.end()) {
             Container* obj = &allContainers[tokens[1]];
             actionComp = Delete(obj);
-        } 
+        }
         else if (allRooms.find(tokens[1]) != allRooms.end()) {
             Room* obj = &allRooms[tokens[1]];
             actionComp = Delete(obj);
-        } 
+        }
         else if (allCreatures.find(tokens[1]) != allCreatures.end()) {
             Creature* obj = &allCreatures[tokens[1]];
             actionComp = Delete(obj);
-        } 
+        }
         else {
             // Not found at all
             cout << "ERROR: obj " << tokens[1] << " not found." << endl;
@@ -549,6 +549,21 @@ int main(int argc, char* argv[] ){
         allRooms[temp.name] = temp;
     }
 
+    /********
+
+    READ IN sample.txt file and sample.out file
+
+    */
+    //ofstream in_file;
+    ifstream in_file;
+    in_file.open("samples/containersample.txt");
+
+    //ofstream cout;
+    ifstream out_file;
+    out_file.open("samples/out.txt");
+        //^DELETE - for automation
+    /*         */
+
     // Make current room
     currRoom = &allRooms["Entrance"];
     //currRoom->printRoom();
@@ -561,8 +576,11 @@ int main(int argc, char* argv[] ){
     while(true) {
         // Gather input string
         string input;
-        cout << "> ";
-        getline(cin, input);
+        //cout << "> ";  //KEEP - commented out for automation
+        //getline(cin, input); //KEEP - commented out for automation
+
+        getline(in_file,input); //read in line from input file
+                                //DELETE - for automation
 
         // Split string at spaces
         vector<string> commands = splitString(input, ' ');
@@ -665,7 +683,8 @@ int main(int argc, char* argv[] ){
                 if(found) {
                     cout << "Item " << itemName << " added to inventory." << endl;
                 } else {
-                    cout << itemName << " not found." << endl;
+                    //cout << itemName << " not found." << endl;
+                    cout << "Error" << endl;
                 }
             }
             else if (key == "open" && commands.size() > 1) {
@@ -678,7 +697,7 @@ int main(int argc, char* argv[] ){
                     // Open Exit
                     if(currRoom->type == "exit") {
                         over = true;
-                        GameOver(over);
+                        GameOver(over); //TODO: dont call this here, its behind the scenes so need to parse it
                         cout << "Game Over" << endl;
                         return 0;
                     }
@@ -705,7 +724,7 @@ int main(int argc, char* argv[] ){
                                 for(int i = 1; i < temp->items.size(); i++){
                                     cout << ", " << temp->items[i]->name;
                                 }
-                                cout << endl;
+                                cout << '.' << endl;
                             }
 
                             //checks if opening a container sets off container trigger
@@ -722,7 +741,8 @@ int main(int argc, char* argv[] ){
                         }
                     }
                     if(!foundContainer){ //if container is not found
-                        cout << "Container not found" << endl; //or print error
+                        //cout << "Container not found" << endl; //or print error
+                        cout << "Error" << endl;
                     }
                 }
             }
@@ -743,7 +763,8 @@ int main(int argc, char* argv[] ){
                     }
                 }
                 if(!found) {
-                    cout << itemName << " not in inventory." << endl;
+                    //cout << itemName << " not in inventory." << endl;
+                    cout << "Error" << endl;
                 }
             }
             else if (key == "drop" && commands.size() > 1) {
@@ -766,13 +787,14 @@ int main(int argc, char* argv[] ){
                                 cout << currRoom->triggers[x].print << endl;
                                  bool triggerAction = parseAction(currRoom->triggers[x].action);
                              }
-                        }                       
+                        }
 
                         break;
                     }
                 }
                 if(!found) {
-                    cout << itemName << " not found." << endl;
+                    //cout << itemName << " not found." << endl;
+                    cout << "Error" << endl;
                 }
             }
             else if (key == "put" && commands.size() > 3) {
@@ -808,19 +830,22 @@ int main(int argc, char* argv[] ){
                                     }
                                     break;
                                 } else {
-                                    cout << containerName << " is closed." << endl;
+                                    //cout << containerName << " is closed." << endl;
+                                    cout << "Error" << endl;
                                 }
                             }
                         }
                         if(!foundContainer) {
-                            cout << containerName << " isn't in this room." << endl;
+                            //cout << containerName << " isn't in this room." << endl;
+                            cout << "Error" << endl;
                         } else {
                             break;
                         }
                     }
                 }
                 if(!foundItem) {
-                    cout << itemName << " not in inventory." << endl;
+                    //cout << itemName << " not in inventory." << endl;
+                    cout << "Error" << endl;
                 }
             }
             else if (key == "turn" && commands.size() > 2 && commands[1] == "on") {
@@ -878,22 +903,23 @@ int main(int argc, char* argv[] ){
                     }
                 }
                 if(!foundItem) {
-                   cout << itemName << " not in inventory." << endl;
+                    //cout << itemName << " not in inventory." << endl;
+                    cout << "Error" << endl;
                 }
-            
+
             }
             else if (key == "attack" && commands.size() > 3 && commands[2] == "with") {
                 // prints “You assault the (creature) with the (item).” and executes “attack” elements
                 // if item matches creature’s “vulnerability” and existing conditions are met
                 string creatureName = commands[1];
                 string itemName = commands[3];
-                
+
                 // Check if the item is in the inventory
                 bool foundItem = false, foundCreature = false, foundVulner = false;
                 for(int i = 0; !foundItem && i < allContainers["inventory"].items.size(); i++) {
                     if(allContainers["inventory"].items[i]->name == itemName) {
                         foundItem = true;
-                        
+
                         for(int j = 0; !foundCreature && j < currRoom->creatures.size(); j++) {
                             if(currRoom->creatures[j]->name == creatureName) {
                                 // The creature is in the room!
@@ -903,7 +929,7 @@ int main(int argc, char* argv[] ){
                                     if(currRoom->creatures[j]->vulner[v] == itemName) {
                                         // The creature is vulnerable!
                                         foundVulner = true;
-                                        
+
                                         // Check conditions
                                         if(checkCondition(currRoom->creatures[j]->attack.conditions)) {
                                             cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
@@ -925,7 +951,7 @@ int main(int argc, char* argv[] ){
                                                  }
                                             }
 
-        
+
                                             break;
 
                                         }
@@ -947,7 +973,8 @@ int main(int argc, char* argv[] ){
                     }
                 }
                 if(!foundItem) {
-                    cout << itemName << " not in inventory." << endl;
+                    //cout << itemName << " not in inventory." << endl;
+                    cout << "Error" << endl;
                 }
             }
             else {
@@ -1099,7 +1126,7 @@ bool Delete(Creature* creature){
     return found;
 }
 
-//Update (object) to (status) – creates new status for object that can be checked by triggers 
+//Update (object) to (status) – creates new status for object that can be checked by triggers
 bool Update(Room* room, string status){
     room->status = status;
     //cout << "update room status to " << status << endl;

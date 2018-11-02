@@ -1,0 +1,132 @@
+Room - Entrance
+i
+Inventory: empty
+take sword
+sword not found.
+read sword
+Error
+i
+Inventory: empty
+open closet
+closet contains sword
+read sword
+Error
+take sword
+Item sword added to inventory.
+read sword
+Nothing written.
+n
+Room - Main
+take bottle
+bottle not found.
+take note
+note not found.
+n
+Room - Staircase (exit)
+take note
+note not found.
+read note
+Error
+open bottle
+bottle contains note
+take note
+Item note added to inventory.
+read note
+You found the exit :-)
+put sword in bottle
+Item sword added to bottle.
+put sword in closet
+closet isn't in this room.
+put sword in container
+container is closed.
+open bottle
+bottle contains sword
+open closet
+Error
+take note
+note not found.
+open bottle
+bottle contains sword
+take sword
+Item sword added to inventory.
+put sword in container
+container is closed.
+open container
+container is empty. 
+take sword
+sword not found.
+i
+Inventory: sword, sword
+take sword
+sword not found.
+n
+Can't go that way.
+open exit
+Victory!
+Game Over
+Room - Entrance
+i
+Inventory: empty
+take sword
+sword not found.
+read sword
+Error
+i
+Inventory: empty
+open closet
+closet contains sword
+read sword
+Error
+take sword
+Item sword added to inventory.
+read sword
+Nothing written.
+n
+Room - Main
+take bottle
+bottle not found.
+take note
+note not found.
+n
+Room - Staircase (exit)
+take note
+note not found.
+read note
+Error
+open bottle
+bottle contains note
+take note
+Item note added to inventory.
+read note
+You found the exit :-)
+put sword in bottle
+Item sword added to bottle.
+put sword in closet
+closet isn't in this room.
+put sword in container
+container is closed.
+open bottle
+bottle contains sword
+open closet
+Error
+take note
+note not found.
+open bottle
+bottle contains sword
+take sword
+Item sword added to inventory.
+put sword in container
+container is closed.
+open container
+container is empty. 
+take sword
+sword not found.
+i
+Inventory: sword, sword
+take sword
+sword not found.
+n
+Can't go that way.
+open exit
+Victory!
+Game Over
