@@ -119,10 +119,6 @@ bool parseAction(string action){
     if (action == ""){
         return false;
     }
-    else if (action == "Game Over") {
-        GameOver(true);
-        return true;
-    }
     bool actionComp = false;
 
     // Split action phrase into words
@@ -632,7 +628,6 @@ int main(int argc, char* argv[] ){
                 }
                 if (roomChange == true){
                     cout << currRoom->descrip <<endl;
-                    currRoom->printRoom();
                     for (int x=0; x<(currRoom->triggers.size()); x++){
                         bool triggered = checkCondition(currRoom->triggers[x].conditions);
                         if (triggered==true){
