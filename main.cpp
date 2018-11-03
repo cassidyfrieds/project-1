@@ -119,6 +119,10 @@ bool parseAction(string action){
     if (action == ""){
         return false;
     }
+    else if (action == "Game Over") {
+        GameOver(true);
+    }
+
     bool actionComp = false;
 
     // Split action phrase into words
