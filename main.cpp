@@ -210,14 +210,13 @@ bool parseAction(string action){
     return actionComp;
 }
 
-int main(int argc, char* argv[] ){
-
+bool parseGameXML(char* filename) {
     /*
         Read the file
     */
 	xml_document<> doc;
 	xml_node<> * root_node;
-	ifstream theFile (argv[1]);         // Read the xml file into a vector
+	ifstream theFile (filename);         // Read the xml file into a vector
 	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
     buffer.push_back('\0');
     theFile.close();
@@ -226,7 +225,7 @@ int main(int argc, char* argv[] ){
 	root_node = doc.first_node("map");  // Find our map node
     if (root_node == NULL){
         cout << "cant get root node" << endl;
-        return 0;
+        return false;
     }
 
     /*
@@ -557,6 +556,17 @@ int main(int argc, char* argv[] ){
         //temp.printRoom();
 
         allRooms[temp.name] = temp;
+    }
+
+    return true;
+}
+
+int main(int argc, char* argv[] ){
+
+    bool gameLoaded = parseGameXML(argv[1]);
+    if(!gameLoaded) {
+        cout << "Error" << endl;
+        return -1;
     }
 
     /********
