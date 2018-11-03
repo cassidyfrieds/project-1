@@ -565,6 +565,7 @@ int main(int argc, char* argv[] ){
 
     // Make current room
     currRoom = &allRooms["Entrance"];
+
     cout << currRoom->descrip <<endl;
 
     /* Start Reading Input */
@@ -578,7 +579,8 @@ int main(int argc, char* argv[] ){
         //getline(cin, input);      // TODO: - KEEP -commented out for automation
 
         getline(in_file, input); // TODO: read in line from input file
-                                // DELETE - for automation
+        cout << "> " << input << endl;
+            //TODO: ^ DELETE - for automation
 
         // Split string at spaces
         vector<string> commands = splitString(input, ' ');
@@ -620,6 +622,12 @@ int main(int argc, char* argv[] ){
                 }
                 if (roomChange == true){
                     cout << currRoom->descrip <<endl;
+                    for (int x=0; x<(currRoom->triggers.size()); x++){
+                        bool triggered = checkCondition(currRoom->triggers[x].conditions);
+                        if (triggered==true){
+                                cout << currRoom->triggers[x].print << endl;
+                        }
+                    }
                 }
                 else{
                     cout << "Can't go that way." << endl;
@@ -663,19 +671,22 @@ int main(int argc, char* argv[] ){
                                 currRoom->containers[i]->items.erase(currRoom->containers[i]->items.begin() + j);
                                 found = true;
 
-                            //checks if taking from container sets off container trigger
-                             bool triggered;
-                            for (int x=0; x<(currRoom->containers[i]->triggers.size()); x++){
-                                triggered = checkCondition(currRoom->containers[i]->triggers[x].conditions);
-                                if (triggered){
-                                     cout << currRoom->containers[i]->triggers[x].print << endl;
-                                    bool triggerAction = parseAction(currRoom->containers[i]->triggers[x].action);
-                                 }
-                             }
+                                //checks if taking from container sets off container trigger
+                                bool triggered;
+                                for (int x=0; x<(currRoom->containers[i]->triggers.size()); x++){
+                                    triggered = checkCondition(currRoom->containers[i]->triggers[x].conditions);
+                                    if (triggered){
+                                        cout << currRoom->containers[i]->triggers[x].print << endl;
+                                        bool triggerAction = parseAction(currRoom->containers[i]->triggers[x].action);
+                                    }
+                                }
 
                                 break;
                             }
                         }
+                    }
+                    else {
+                        //cout << currRoom->containers[i]->name << " is not open." << endl;
                     }
                 }
                 if(found) {
@@ -711,8 +722,7 @@ int main(int argc, char* argv[] ){
                         if(currRoom->containers[i]->name == commands[1]){
                             foundContainer = true; //container is found within room
                             Container* temp = currRoom->containers[i];
-                            temp->open = true; //container was opened
-                            //allContainers[temp->name].open = true; //updates in allContainers
+                            currRoom->containers[i]->open = true; //container was opened
                             if(temp->items.empty()) { //container is empty
                                 cout << temp->name << " is empty. " << endl;
                             }
@@ -810,27 +820,21 @@ int main(int argc, char* argv[] ){
                         for(int k = 0; k < currRoom->containers.size(); k++) {
                             if(currRoom->containers[k]->name == containerName) {
                                 foundContainer = true;
-                                if(currRoom->containers[k]->open) {
-                                    currRoom->containers[k]->items.push_back(allContainers["inventory"].items[i]);
-                                    allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + k);
-                                    //updating said container so that trigger can be checked
-                                    //allContainers[containerName].items.push_back(allItems[itemName]);
-                                    cout << "Item " << itemName <<  " added to " << containerName << "." << endl;
-                                    // TODO: do we need to check if this opens the container?
+                                currRoom->containers[k]->items.push_back(allContainers["inventory"].items[i]);
+                                allContainers["inventory"].items.erase(allContainers["inventory"].items.begin() + i);
 
-                                    //checks if putting item in container sets off a container trigger
-                                    for (int x=0; x<(currRoom->containers[k]->triggers.size()); x++){
-                                        triggered = checkCondition(currRoom->containers[k]->triggers[x].conditions);
-                                        if (triggered){
-                                            cout << currRoom->containers[k]->triggers[x].print << endl;
-                                            bool triggerAction = parseAction(currRoom->containers[k]->triggers[x].action);
-                                        }
+                                //updating said container so that trigger can be checked
+                                cout << "Item " << itemName <<  " added to " << containerName << "." << endl;
+                                
+                                //checks if putting item in container sets off a container trigger
+                                for (int x=0; x<(currRoom->containers[k]->triggers.size()); x++){
+                                    triggered = checkCondition(currRoom->containers[k]->triggers[x].conditions);
+                                    if (triggered){
+                                        cout << currRoom->containers[k]->triggers[x].print << endl;
+                                        bool triggerAction = parseAction(currRoom->containers[k]->triggers[x].action);
                                     }
-                                    break;
-                                } else {
-                                    //cout << containerName << " is closed." << endl;
-                                    cout << "Error5" << endl;
                                 }
+                                break;
                             }
                         }
                         if(!foundContainer) {
