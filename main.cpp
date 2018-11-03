@@ -554,11 +554,10 @@ int main(int argc, char* argv[] ){
     READ IN sample.txt file and sample.out file
 
     */
-    //ofstream in_file;
+
     ifstream in_file;
     in_file.open("samples/containersample.txt");
 
-    //ofstream cout;
     ifstream out_file;
     out_file.open("samples/out.txt");
         //^DELETE - for automation
@@ -684,7 +683,7 @@ int main(int argc, char* argv[] ){
                     cout << "Item " << itemName << " added to inventory." << endl;
                 } else {
                     //cout << itemName << " not found." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error1" << endl;
                 }
             }
             else if (key == "open" && commands.size() > 1) {
@@ -697,12 +696,13 @@ int main(int argc, char* argv[] ){
                     // Open Exit
                     if(currRoom->type == "exit") {
                         over = true;
-                        GameOver(over); //TODO: dont call this here, its behind the scenes so need to parse it
+                        //GameOver(over); //TODO: dont call this here, its behind the scenes so need to parse it
                         cout << "Game Over" << endl;
                         return 0;
                     }
                     else {
-                        cout << "This is not an exit." << endl;
+                        //cout << "This is not an exit." << endl;
+                        cout << "Error" << endl;
                     }
                 }
                 else {
@@ -742,7 +742,7 @@ int main(int argc, char* argv[] ){
                     }
                     if(!foundContainer){ //if container is not found
                         //cout << "Container not found" << endl; //or print error
-                        cout << "Error" << endl;
+                        cout << "Error2" << endl;
                     }
                 }
             }
@@ -764,7 +764,7 @@ int main(int argc, char* argv[] ){
                 }
                 if(!found) {
                     //cout << itemName << " not in inventory." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error3" << endl;
                 }
             }
             else if (key == "drop" && commands.size() > 1) {
@@ -794,10 +794,10 @@ int main(int argc, char* argv[] ){
                 }
                 if(!found) {
                     //cout << itemName << " not found." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error4" << endl;
                 }
             }
-            else if (key == "put" && commands.size() > 3) {
+            else if (key == "put" && commands.size() > 3) { //TODO: for put command - be able to put an item in a container (end of containersample)
                 // adds the item to the containers inventory and and prints “Item (item) added to (container).
                 string itemName = commands[1];
                 string containerName = commands[3];
@@ -831,13 +831,13 @@ int main(int argc, char* argv[] ){
                                     break;
                                 } else {
                                     //cout << containerName << " is closed." << endl;
-                                    cout << "Error" << endl;
+                                    cout << "Error5" << endl;
                                 }
                             }
                         }
                         if(!foundContainer) {
                             //cout << containerName << " isn't in this room." << endl;
-                            cout << "Error" << endl;
+                            cout << "Error6" << endl;
                         } else {
                             break;
                         }
@@ -845,7 +845,7 @@ int main(int argc, char* argv[] ){
                 }
                 if(!foundItem) {
                     //cout << itemName << " not in inventory." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error7" << endl;
                 }
             }
             else if (key == "turn" && commands.size() > 2 && commands[1] == "on") {
@@ -904,7 +904,7 @@ int main(int argc, char* argv[] ){
                 }
                 if(!foundItem) {
                     //cout << itemName << " not in inventory." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error8" << endl;
                 }
 
             }
@@ -967,18 +967,19 @@ int main(int argc, char* argv[] ){
                             }
                         }
                         if(!foundCreature) {
-                            cout << creatureName << " not in room." << endl;
+                            //cout << creatureName << " not in room." << endl;
+                            cout << "Error11" << endl;
                         }
                         break;
                     }
                 }
                 if(!foundItem) {
                     //cout << itemName << " not in inventory." << endl;
-                    cout << "Error" << endl;
+                    cout << "Error9" << endl;
                 }
             }
             else {
-                cout << "Error" << endl;
+                cout << "Error10" << endl;
             }
         }
     }
