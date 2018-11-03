@@ -554,6 +554,7 @@ int main(int argc, char* argv[] ){
     READ IN sample.txt file and sample.out file
 
     */
+   // TODO: remove automated testing before submission
 
     ifstream in_file;
     in_file.open("samples/containersample.txt");
@@ -561,11 +562,9 @@ int main(int argc, char* argv[] ){
     ifstream out_file;
     out_file.open("samples/out.txt");
         //^DELETE - for automation
-    /*         */
 
     // Make current room
     currRoom = &allRooms["Entrance"];
-    //currRoom->printRoom();
     cout << currRoom->descrip <<endl;
 
     /* Start Reading Input */
@@ -575,11 +574,11 @@ int main(int argc, char* argv[] ){
     while(true) {
         // Gather input string
         string input;
-        //cout << "> ";  //KEEP - commented out for automation
-        //getline(cin, input); //KEEP - commented out for automation
+        //cout << "> ";             // TODO: - KEEP - commented out for automation
+        //getline(cin, input);      // TODO: - KEEP -commented out for automation
 
-        getline(in_file,input); //read in line from input file
-                                //DELETE - for automation
+        getline(in_file, input); // TODO: read in line from input file
+                                // DELETE - for automation
 
         // Split string at spaces
         vector<string> commands = splitString(input, ' ');
@@ -689,14 +688,13 @@ int main(int argc, char* argv[] ){
             else if (key == "open" && commands.size() > 1) {
                 bool over = false;
 
-                //Update(*currRoom, "woohoo"); //FIX ME testing
-                //cout<<currRoom->status<<endl; //FIX ME testing
+                //Update(*currRoom, "woohoo"); // TODO: FIX ME testing
+                //cout<<currRoom->status<<endl; // TODO: FIX ME testing
 
                 if(commands[1] == "exit") {
                     // Open Exit
                     if(currRoom->type == "exit") {
                         over = true;
-                        //GameOver(over); //TODO: dont call this here, its behind the scenes so need to parse it
                         cout << "Game Over" << endl;
                         return 0;
                     }

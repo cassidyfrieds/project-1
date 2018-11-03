@@ -135,3 +135,4 @@ zork
 .DS_Store
 main.o
 *.o
+game
