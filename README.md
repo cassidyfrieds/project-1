@@ -8,3 +8,12 @@
 * There will not be items and containers with the same name
 * `<action>` will always be updating a container or item name to the new name
 * A container must be opened first, before you can put anything in it
+
+### Sample Test Results
+- [x] Container
+- [ ] Creature
+    * Not moved to Main Room
+    * Error11 when attacking giant
+- [ ] Item
+- [ ] Room
+- [ ] Trigger

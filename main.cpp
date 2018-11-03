@@ -119,6 +119,10 @@ bool parseAction(string action){
     if (action == ""){
         return false;
     }
+    else if (action == "Game Over") {
+        GameOver(true);
+        return true;
+    }
     bool actionComp = false;
 
     // Split action phrase into words
@@ -144,8 +148,14 @@ bool parseAction(string action){
                 actionComp = Add(obj1, obj2);
             }
         }
+        else if(allCreatures.find(tokens[1]) != allCreatures.end()) {
+            // Add a creature
+            Creature* obj1 = &allCreatures[tokens[1]];
+            Room* obj2 = &allRooms[tokens[3]];
+            actionComp = Add(obj1, obj2);
+        }
         else {
-            //canot be found in allItems it is a container
+            //canot be found in allItems or creatures it is a container
             Container* obj1 = &allContainers[tokens[1]];
             //if it is a container it must be added to a room
             Room* obj2 = &allRooms[tokens[3]];
@@ -553,14 +563,12 @@ int main(int argc, char* argv[] ){
 
     READ IN sample.txt file and sample.out file
 
-    */
-   // TODO: remove automated testing before submission
+    TODO: remove automated testing before submission
+
+    ********/
 
     ifstream in_file;
-    in_file.open("samples/containersample.txt");
-
-    ifstream out_file;
-    out_file.open("samples/out.txt");
+    in_file.open("samples/creaturesample.txt");
         //^DELETE - for automation
 
     // Make current room
@@ -575,11 +583,13 @@ int main(int argc, char* argv[] ){
     while(true) {
         // Gather input string
         string input;
-        //cout << "> ";             // TODO: - KEEP - commented out for automation
-        //getline(cin, input);      // TODO: - KEEP -commented out for automation
+        cout << "> ";             // TODO: - KEEP - commented out for automation
+        getline(cin, input);      // TODO: - KEEP -commented out for automation
 
+        /*
         getline(in_file, input); // TODO: read in line from input file
         cout << "> " << input << endl;
+        */
             //TODO: ^ DELETE - for automation
 
         // Split string at spaces
@@ -622,6 +632,7 @@ int main(int argc, char* argv[] ){
                 }
                 if (roomChange == true){
                     cout << currRoom->descrip <<endl;
+                    currRoom->printRoom();
                     for (int x=0; x<(currRoom->triggers.size()); x++){
                         bool triggered = checkCondition(currRoom->triggers[x].conditions);
                         if (triggered==true){
@@ -1155,5 +1166,6 @@ bool Update(Item* item, string status){
 void GameOver(bool over) {
     if(over == true){
         cout<< "Victory!" << endl;
+        exit(0);
     }
 }
