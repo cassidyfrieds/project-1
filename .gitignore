@@ -132,3 +132,7 @@ Module.symvers
 Mkfile.old
 dkms.conf
 zork
+.DS_Store
+main.o
+*.o
+game
