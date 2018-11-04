@@ -719,7 +719,7 @@ bool parseInput(string input) {
 
             } else {
                 //cout << itemName << " not found." << endl;
-                cout << "Error1" << endl;
+                cout << "Error" << endl;
             }
         }
         else if (key == "open" && commands.size() > 1) {
@@ -786,7 +786,7 @@ bool parseInput(string input) {
                 }
                 if(!foundContainer){ //if container is not found
                     //cout << "Container not found" << endl; //or print error
-                    cout << "Error2" << endl;
+                    cout << "Error" << endl;
                 }
             }
         }
@@ -808,7 +808,7 @@ bool parseInput(string input) {
             }
             if(!found) {
                 //cout << itemName << " not in inventory." << endl;
-                cout << "Error3" << endl;
+                cout << "Error" << endl;
             }
         }
         else if (key == "drop" && commands.size() > 1) {
@@ -847,7 +847,7 @@ bool parseInput(string input) {
             }
             if(!found) {
                 //cout << itemName << " not found." << endl;
-                cout << "Error4" << endl;
+                cout << "Error" << endl;
             }
         }
         else if (key == "put" && commands.size() > 3) { //TODO: for put command - be able to put an item in a container (end of containersample)
@@ -893,7 +893,7 @@ bool parseInput(string input) {
                     }
                     if(!foundContainer) {
                         //cout << containerName << " isn't in this room." << endl;
-                        cout << "Error6" << endl;
+                        cout << "Error" << endl;
                     } else {
                         break;
                     }
@@ -901,7 +901,7 @@ bool parseInput(string input) {
             }
             if(!foundItem) {
                 //cout << itemName << " not in inventory." << endl;
-                cout << "Error7" << endl;
+                cout << "Error" << endl;
             }
         }
         else if (key == "turn" && commands.size() > 2 && commands[1] == "on") {
@@ -981,7 +981,7 @@ bool parseInput(string input) {
             }
             if(!foundItem) {
                 //cout << itemName << " not in inventory." << endl;
-                cout << "Error8" << endl;
+                cout << "Error" << endl;
             }
 
         }
@@ -1042,14 +1042,14 @@ bool parseInput(string input) {
                                     }
                                     else {
                                         cout << "The " << creatureName << " is vulnerable, but " << itemName << " does not meet conditions " << endl;
-                                        cout << "Error110" << endl;
+                                        cout << "Error" << endl;
                                         return false;
                                     }
                                 }
                             }
                             if(!foundVulner) {
                                 //cout << "The " << creatureName << " is not vulnerable to " << itemName << endl;
-                                cout << "Error110" << endl;
+                                cout << "Error" << endl;
                                 return false;
                             }
                             break;
@@ -1057,7 +1057,7 @@ bool parseInput(string input) {
                     }
                     if(!foundCreature) {
                         //cout << creatureName << " not in room." << endl;
-                        cout << "Error11" << endl;
+                        cout << "Error" << endl;
                         return false;
                     }
                     break;
@@ -1065,12 +1065,12 @@ bool parseInput(string input) {
             }
             if(!foundItem) {
                 //cout << itemName << " not in inventory." << endl;
-                cout << "Error9" << endl;
+                cout << "Error" << endl;
                 return false;
             }
         }
         else {
-            cout << "Error10" << endl;
+            cout << "Error" << endl;
             return false;
         }
     }
