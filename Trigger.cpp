@@ -5,7 +5,6 @@ using namespace std;
 Trigger::Trigger(){
     type = "";
     print = "";
-    action = "";
     triggered = false;
 }
 
@@ -26,6 +25,10 @@ void Trigger::printTrigger() const {
         cout << "\t\t\t~ ";
         conditions[i].printCondition();
         
+    }
+    cout << "\t\t- actions:" << endl;
+    for(int i = 0; i < action.size(); i++) {
+        cout << "\t\t\t~ " << action[i] << endl;    
     }
     cout << "\n" << endl;
 };

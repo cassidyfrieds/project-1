@@ -711,7 +711,7 @@ bool parseInput(string input) {
                                     currRoom->creatures[x]->triggers[y].action[k] = "";
                                 }
                                 bool triggerAction = parseAction(temp);
-                             }                                 
+                             }
                         }
                     }
                  }
@@ -719,7 +719,7 @@ bool parseInput(string input) {
 
             } else {
                 //cout << itemName << " not found." << endl;
-                cout << "Error" << endl;
+                cout << "Error1" << endl;
             }
         }
         else if (key == "open" && commands.size() > 1) {
@@ -786,7 +786,7 @@ bool parseInput(string input) {
                 }
                 if(!foundContainer){ //if container is not found
                     //cout << "Container not found" << endl; //or print error
-                    cout << "Error" << endl;
+                    cout << "Error2" << endl;
                 }
             }
         }
@@ -808,7 +808,7 @@ bool parseInput(string input) {
             }
             if(!found) {
                 //cout << itemName << " not in inventory." << endl;
-                cout << "Error" << endl;
+                cout << "Error3" << endl;
             }
         }
         else if (key == "drop" && commands.size() > 1) {
@@ -847,7 +847,7 @@ bool parseInput(string input) {
             }
             if(!found) {
                 //cout << itemName << " not found." << endl;
-                cout << "Error" << endl;
+                cout << "Error4" << endl;
             }
         }
         else if (key == "put" && commands.size() > 3) { //TODO: for put command - be able to put an item in a container (end of containersample)
@@ -870,7 +870,7 @@ bool parseInput(string input) {
 
                             //updating said container so that trigger can be checked
                             cout << "Item " << itemName <<  " added to " << containerName << "." << endl;
-                            
+
                             //checks if putting item in container sets off a container trigger
                             for (int x=0; x<(currRoom->containers[k]->triggers.size()); x++){
                                 triggered = checkCondition(currRoom->containers[k]->triggers[x].conditions);
@@ -885,7 +885,7 @@ bool parseInput(string input) {
                                             currRoom->containers[k]->triggers[x].action[y] = "";
                                         }
                                         bool triggerAction = parseAction(temp);
-                                    }   
+                                    }
                                 }
                             }
                             break;
@@ -893,7 +893,7 @@ bool parseInput(string input) {
                     }
                     if(!foundContainer) {
                         //cout << containerName << " isn't in this room." << endl;
-                        cout << "Error" << endl;
+                        cout << "Error6" << endl;
                     } else {
                         break;
                     }
@@ -901,7 +901,7 @@ bool parseInput(string input) {
             }
             if(!foundItem) {
                 //cout << itemName << " not in inventory." << endl;
-                cout << "Error" << endl;
+                cout << "Error7" << endl;
             }
         }
         else if (key == "turn" && commands.size() > 2 && commands[1] == "on") {
@@ -981,7 +981,7 @@ bool parseInput(string input) {
             }
             if(!foundItem) {
                 //cout << itemName << " not in inventory." << endl;
-                cout << "Error" << endl;
+                cout << "Error8" << endl;
             }
 
         }
@@ -1042,14 +1042,14 @@ bool parseInput(string input) {
                                     }
                                     else {
                                         cout << "The " << creatureName << " is vulnerable, but " << itemName << " does not meet conditions " << endl;
-                                        cout << "Error" << endl;
+                                        cout << "Error110" << endl;
                                         return false;
                                     }
                                 }
                             }
                             if(!foundVulner) {
                                 //cout << "The " << creatureName << " is not vulnerable to " << itemName << endl;
-                                cout << "Error" << endl;
+                                cout << "Error110" << endl;
                                 return false;
                             }
                             break;
@@ -1057,7 +1057,7 @@ bool parseInput(string input) {
                     }
                     if(!foundCreature) {
                         //cout << creatureName << " not in room." << endl;
-                        cout << "Error" << endl;
+                        cout << "Error11" << endl;
                         return false;
                     }
                     break;
@@ -1065,12 +1065,12 @@ bool parseInput(string input) {
             }
             if(!foundItem) {
                 //cout << itemName << " not in inventory." << endl;
-                cout << "Error" << endl;
+                cout << "Error9" << endl;
                 return false;
             }
         }
         else {
-            cout << "Error" << endl;
+            cout << "Error10" << endl;
             return false;
         }
     }
@@ -1090,7 +1090,7 @@ int main(int argc, char* argv[] ){
         TODO: remove automated testing before submission
     ********/
     ifstream in_file;
-    in_file.open("samples/triggersample.txt");
+    in_file.open("samples/creaturesample.txt");
     //^DELETE - for automation
 
     // Make current room
@@ -1105,14 +1105,14 @@ int main(int argc, char* argv[] ){
     while(true) {
         // Gather input string
         string input;
-        //cout << "> ";             // TODO: - KEEP - commented out for automation
-        //getline(cin, input);      // TODO: - KEEP -commented out for automation
+        cout << "> ";             // TODO: - KEEP - commented out for automation
+        getline(cin, input);      // TODO: - KEEP -commented out for automation
 
-        ///********
+        /********
         getline(in_file, input); // TODO: read in line from input file
-        //cout << "> " << input << endl;
+        cout << "> " << input << endl;
         //TODO: ^ DELETE - for automation
-        //********/
+        ********/
 
         parseInput(input);
     }
