@@ -18,7 +18,7 @@ class Trigger {
     public:
         string type;
         string print;
-        string action;
+        vector <string> action;
         vector <string> commands;
         vector <Condition> conditions;
         bool triggered;

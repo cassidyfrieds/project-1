@@ -282,9 +282,9 @@ bool parseGameXML(char* filename) {
             if(trigger_node->first_node("print")) {
                 tempTrigger.print = trigger_node->first_node("print")->value();
             }
-            //string trigger.action
-            if(trigger_node->first_node("action")) {
-                tempTrigger.action = trigger_node->first_node("action")->value();
+            //vector <string> trigger.action;
+            for(xml_node<> * action_node = trigger_node->first_node("action"); action_node; action_node = action_node->next_sibling("action")) {
+                tempTrigger.action.push_back(action_node->value());
             }
             //vector <string> trigger.commands;
             for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
@@ -374,9 +374,9 @@ bool parseGameXML(char* filename) {
             if(trigger_node->first_node("print")) {
                 tempTrigger.print = trigger_node->first_node("print")->value();
             }
-            //string trigger.action
-            if(trigger_node->first_node("action")) {
-                tempTrigger.action = trigger_node->first_node("action")->value();
+            //vector <string> trigger.action;
+            for(xml_node<> * action_node = trigger_node->first_node("action"); action_node; action_node = action_node->next_sibling("action")) {
+                tempTrigger.action.push_back(action_node->value());
             }
             //vector <string> trigger.commands;
             for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
@@ -442,9 +442,9 @@ bool parseGameXML(char* filename) {
             if(trigger_node->first_node("print")) {
                 tempTrigger.print = trigger_node->first_node("print")->value();
             }
-            //string trigger.action
-            if(trigger_node->first_node("action")) {
-                tempTrigger.action = trigger_node->first_node("action")->value();
+            //vector <string> trigger.action;
+            for(xml_node<> * action_node = trigger_node->first_node("action"); action_node; action_node = action_node->next_sibling("action")) {
+                tempTrigger.action.push_back(action_node->value());
             }
             //vector <string> trigger.commands;
             for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
@@ -536,9 +536,9 @@ bool parseGameXML(char* filename) {
             if(trigger_node->first_node("print")) {
                 tempTrigger.print = trigger_node->first_node("print")->value();
             }
-            //string trigger.action
-            if(trigger_node->first_node("action")) {
-                tempTrigger.action = trigger_node->first_node("action")->value();
+            //vector <string> trigger.action;
+            for(xml_node<> * action_node = trigger_node->first_node("action"); action_node; action_node = action_node->next_sibling("action")) {
+                tempTrigger.action.push_back(action_node->value());
             }
             //vector <string> trigger.commands;
             for(xml_node<> * command_node = trigger_node->first_node("command"); command_node; command_node = command_node->next_sibling("command")) {
@@ -673,7 +673,16 @@ bool parseInput(string input) {
                                 triggered = checkCondition(currRoom->containers[i]->triggers[x].conditions);
                                 if (triggered){
                                     cout << currRoom->containers[i]->triggers[x].print << endl;
-                                    bool triggerAction = parseAction(currRoom->containers[i]->triggers[x].action);
+                                if (currRoom->containers[i]->triggers[x].type.compare("single") == 0){
+                                    currRoom->containers[i]->triggers[x].print = "";
+                                }
+                                    for (int k = 0; k < currRoom->containers[i]->triggers[x].action.size(); k++) {
+                                        string temp = currRoom->containers[i]->triggers[x].action[k];
+                                        if (currRoom->containers[i]->triggers[x].type.compare("single") == 0){
+                                            currRoom->containers[i]->triggers[x].action[k] = "";
+                                        }
+                                        bool triggerAction = parseAction(temp);
+                                    }
                                 }
                             }
                             break;
@@ -686,6 +695,28 @@ bool parseInput(string input) {
             }
             if(found) {
                 cout << "Item " << itemName << " added to inventory." << endl;
+
+                //checks if turnon on item sets of creature in the room trigger
+                for (int x=0; x<(currRoom->creatures.size()); x++){
+                    for (int y=0; y<(currRoom->creatures[x]->triggers.size()); y++){
+                        bool triggered = checkCondition(currRoom->creatures[x]->triggers[y].conditions);
+                        if (triggered){
+                            cout << currRoom->creatures[x]->triggers[y].print << endl;
+                            if (currRoom->creatures[x]->triggers[y].type.compare("single") == 0){
+                                 currRoom->creatures[x]->triggers[y].print = "";
+                            }
+                            for (int k = 0; k < currRoom->creatures[x]->triggers[y].action.size(); k++) {
+                                string temp = currRoom->creatures[x]->triggers[y].action[k];
+                                if (currRoom->creatures[x]->triggers[y].type.compare("single") == 0){
+                                    currRoom->creatures[x]->triggers[y].action[k] = "";
+                                }
+                                bool triggerAction = parseAction(temp);
+                             }                                 
+                        }
+                    }
+                 }
+
+
             } else {
                 //cout << itemName << " not found." << endl;
                 cout << "Error1" << endl;
@@ -737,7 +768,16 @@ bool parseInput(string input) {
                                 triggered = checkCondition(temp->triggers[x].conditions);
                                 if (triggered){
                                     cout << temp->triggers[x].print << endl;
-                                    bool triggerAction = parseAction(temp->triggers[x].action);
+                                if (temp->triggers[x].type.compare("single") == 0){
+                                     temp->triggers[x].print = "";
+                                }
+                                    for (int k = 0; k < temp->triggers[x].action.size(); k++) {
+                                        string tempstr = temp->triggers[x].action[k];
+                                        if (temp->triggers[x].type.compare("single") == 0){
+                                             temp->triggers[x].action[k] = "";
+                                         }
+                                         bool triggerAction = parseAction(tempstr);
+                                    }
                                 }
                             }
 
@@ -789,8 +829,17 @@ bool parseInput(string input) {
                             triggered = checkCondition(currRoom->triggers[x].conditions);
                         if (triggered){
                             cout << currRoom->triggers[x].print << endl;
-                                bool triggerAction = parseAction(currRoom->triggers[x].action);
+                            if (currRoom->triggers[x].type.compare("single") == 0){
+                                  currRoom->triggers[x].print = "";
                             }
+                            for (int k = 0; k < currRoom->triggers[x].action.size(); k++) {
+                                string temp = currRoom->triggers[x].action[k];
+                                if (currRoom->triggers[x].type.compare("single") == 0){
+                                    currRoom->triggers[x].action[k] = "";
+                                }
+                                bool triggerAction = parseAction(temp);
+                            }
+                        }
                     }
 
                     break;
@@ -827,7 +876,16 @@ bool parseInput(string input) {
                                 triggered = checkCondition(currRoom->containers[k]->triggers[x].conditions);
                                 if (triggered){
                                     cout << currRoom->containers[k]->triggers[x].print << endl;
-                                    bool triggerAction = parseAction(currRoom->containers[k]->triggers[x].action);
+                                    if (currRoom->containers[k]->triggers[x].type.compare("single") == 0){
+                                        currRoom->containers[k]->triggers[x].print = "";
+                                    }
+                                    for (int y = 0; y < currRoom->containers[k]->triggers[x].action.size(); y++) {
+                                        string temp = currRoom->containers[k]->triggers[x].action[y];
+                                        if (currRoom->containers[k]->triggers[x].type.compare("single") == 0){
+                                            currRoom->containers[k]->triggers[x].action[y] = "";
+                                        }
+                                        bool triggerAction = parseAction(temp);
+                                    }   
                                 }
                             }
                             break;
@@ -865,8 +923,17 @@ bool parseInput(string input) {
                     for (int x=0; x<(allContainers["inventory"].items[i]->triggers.size()); x++){
                         triggered = checkCondition(allContainers["inventory"].items[i]->triggers[x].conditions);
                         if (triggered){
-                                cout << allContainers["inventory"].items[i]->triggers[x].print << endl;
-                            bool triggerAction = parseAction(allContainers["inventory"].items[i]->triggers[x].action);
+                            cout << allContainers["inventory"].items[i]->triggers[x].print << endl;
+                            if (allContainers["inventory"].items[i]->triggers[x].type.compare("single") == 0){
+                                    allContainers["inventory"].items[i]->triggers[x].print = "";
+                            }
+                            for (int k = 0; k < allContainers["inventory"].items[i]->triggers[x].action.size(); k++) {
+                                string temp = allContainers["inventory"].items[i]->triggers[x].action[k];
+                                if (allContainers["inventory"].items[i]->triggers[x].type.compare("single") == 0){
+                                       allContainers["inventory"].items[i]->triggers[x].action[k] = "";
+                                }
+                                bool triggerAction = parseAction(temp);
+                            }
                         }
                     }
 
@@ -876,9 +943,15 @@ bool parseInput(string input) {
                             triggered = checkCondition(currRoom->creatures[x]->triggers[y].conditions);
                             if (triggered){
                                 cout << currRoom->creatures[x]->triggers[y].print << endl;
-                                bool triggerAction = parseAction(currRoom->creatures[x]->triggers[y].action);
                                 if (currRoom->creatures[x]->triggers[y].type.compare("single") == 0){
                                     currRoom->creatures[x]->triggers[y].print = "";
+                                }
+                                for (int k = 0; k < currRoom->creatures[x]->triggers[y].action.size(); k++) {
+                                    string temp = currRoom->creatures[x]->triggers[y].action[k];
+                                    if (currRoom->creatures[x]->triggers[y].type.compare("single") == 0){
+                                           currRoom->creatures[x]->triggers[y].action[k] = "";
+                                    }
+                                    bool triggerAction = parseAction(temp);
                                 }
                             }
                         }
@@ -890,9 +963,15 @@ bool parseInput(string input) {
                             triggered = checkCondition(currRoom->containers[x]->triggers[y].conditions);
                             if (triggered){
                                 cout << currRoom->containers[x]->triggers[y].print << endl;
-                                bool triggerAction = parseAction(currRoom->containers[x]->triggers[y].action);
                                 if (currRoom->containers[x]->triggers[y].type.compare("single") == 0){
                                     currRoom->containers[x]->triggers[y].print = "";
+                                }
+                                for (int k = 0; k < currRoom->containers[x]->triggers[y].action.size(); k++) {
+                                    string temp = currRoom->containers[x]->triggers[y].action[k];
+                                    if (currRoom->containers[x]->triggers[y].type.compare("single") == 0){
+                                            currRoom->containers[x]->triggers[y].action[k] = "";
+                                    }
+                                    bool triggerAction = parseAction(temp);
                                 }
                             }
                         }
@@ -931,7 +1010,9 @@ bool parseInput(string input) {
                                     // Check conditions
                                     if(checkCondition(currRoom->creatures[j]->attack.conditions)) {
                                         cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
-                                        cout << currRoom->creatures[j]->attack.print << endl;
+                                        if (currRoom->creatures[j]->attack.print != ""){
+                                            cout << currRoom->creatures[j]->attack.print <<endl;
+                                        }
                                         Creature* curCreature = currRoom->creatures[j];
                                         vector<string> curActions = curCreature->attack.actions;
                                         for (int x = 0; x < curActions.size(); x++) {
@@ -941,14 +1022,19 @@ bool parseInput(string input) {
                                         //checks if attacking creature sets off a creature trigger
                                         bool triggered;
                                         for (int x=0; x<(curCreature->triggers.size()); x++){
-                                                                                    cout << "WE OUT HERE" << endl;
-
                                                 triggered = checkCondition(curCreature->triggers[x].conditions);
                                                 if (triggered){
                                                 cout << curCreature->triggers[x].print << endl;
-                                                bool triggerAction = parseAction(currRoom->creatures[j]->triggers[x].action);
                                                 if (curCreature->triggers[x].type.compare("single") == 0){
                                                     curCreature->triggers[x].print = "";
+                                                }
+                                                for (int y = 0; y < currRoom->creatures[j]->triggers[x].action.size(); y++) {
+                                                    //cout << "action: " << currRoom->creatures[j]->triggers[x].action[y] << endl;
+                                                    string temp = currRoom->creatures[j]->triggers[x].action[y];
+                                                    if (curCreature->triggers[x].type.compare("single") == 0){
+                                                        currRoom->creatures[j]->triggers[x].action[y] = "";
+                                                    }
+                                                    bool triggerAction = parseAction(temp);
                                                 }
                                             }
                                         }
