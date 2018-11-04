@@ -614,7 +614,7 @@ bool parseInput(string input) {
                 }
             }
             if (roomChange == true){
-                cout << currRoom->descrip <<endl;
+                cout << currRoom->descrip << endl;
                 for (int x=0; x<(currRoom->triggers.size()); x++){
                     bool triggered = checkCondition(currRoom->triggers[x].conditions);
                     if (triggered==true){
@@ -931,6 +931,8 @@ bool parseInput(string input) {
                                         cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
                                         cout << currRoom->creatures[j]->attack.print << endl;
                                         for (int x = 0; x < currRoom->creatures[j]->attack.actions.size(); x++) {
+                                            cout << "~" << currRoom->creatures[j]->attack.actions[x] << endl;
+                                            //cout << "WE HERE " << x << endl;
                                             parseAction(currRoom->creatures[j]->attack.actions[x]);
                                         }
 
@@ -950,11 +952,15 @@ bool parseInput(string input) {
                                     }
                                     else {
                                         cout << "The " << creatureName << " is vulnerable, but " << itemName << " does not meet conditions " << endl;
+                                        cout << "Error110" << endl;
+                                        return false;
                                     }
                                 }
                             }
                             if(!foundVulner) {
-                                cout << "The " << creatureName << " is not vulnerable to " << itemName << endl;
+                                //cout << "The " << creatureName << " is not vulnerable to " << itemName << endl;
+                                cout << "Error110" << endl;
+                                return false;
                             }
                             break;
                         }
@@ -962,6 +968,7 @@ bool parseInput(string input) {
                     if(!foundCreature) {
                         //cout << creatureName << " not in room." << endl;
                         cout << "Error11" << endl;
+                        return false;
                     }
                     break;
                 }
@@ -969,15 +976,15 @@ bool parseInput(string input) {
             if(!foundItem) {
                 //cout << itemName << " not in inventory." << endl;
                 cout << "Error9" << endl;
+                return false;
             }
         }
         else {
             cout << "Error10" << endl;
             return false;
         }
-        return true;
     }
-    return false;
+    return true;
 }
 
 int main(int argc, char* argv[] ){
