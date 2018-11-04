@@ -673,7 +673,6 @@ bool parseInput(string input) {
                                     bool triggerAction = parseAction(currRoom->containers[i]->triggers[x].action);
                                 }
                             }
-
                             break;
                         }
                     }
@@ -735,7 +734,7 @@ bool parseInput(string input) {
                                 triggered = checkCondition(temp->triggers[x].conditions);
                                 if (triggered){
                                     cout << temp->triggers[x].print << endl;
-                                bool triggerAction = parseAction(temp->triggers[x].action);
+                                    bool triggerAction = parseAction(temp->triggers[x].action);
                                 }
                             }
 
@@ -930,10 +929,10 @@ bool parseInput(string input) {
                                     if(checkCondition(currRoom->creatures[j]->attack.conditions)) {
                                         cout << "You assault the " << creatureName << " with the " << itemName << "." << endl;
                                         cout << currRoom->creatures[j]->attack.print << endl;
-                                        for (int x = 0; x < currRoom->creatures[j]->attack.actions.size(); x++) {
-                                            cout << "~" << currRoom->creatures[j]->attack.actions[x] << endl;
-                                            //cout << "WE HERE " << x << endl;
-                                            parseAction(currRoom->creatures[j]->attack.actions[x]);
+                                        vector<string> curActions = currRoom->creatures[j]->attack.actions;
+                                        for (int x = 0; x < curActions.size(); x++) {
+                                            cout << "~" << curActions[x] << endl;
+                                            parseAction(curActions[x]);
                                         }
 
                                         //checks if attacking creature sets off a creature trigger
@@ -1148,24 +1147,15 @@ bool Delete(Container* container){
     return found;
 }
 bool Delete(Creature* creature){
-    //remove from creatures in room
+    cout << "try to find " << creature->name << endl;
+
     bool found = false;
-    // Check containers
-    for(int i = 0; !found && i < currRoom->creatures.size(); i++) {
-        if(currRoom->creatures[i]->name == creature->name) {
-            currRoom->creatures.erase(currRoom->creatures.begin() + i);
-            found = true;
-            break;
-        }
-    }
+    if (allCreatures.find(creature->name) != allCreatures.end()) {
+        cout << "found " << creature->name << endl;
+        found = true;
 
-    // This method leaves the creature in allCreatures in case it needs to be parsed later
-    // TODO: decide if we need to delete it
-
-    if(found) {
-        //cout << "Creature " << creature->name << " deleted from room." << endl;
-    } else {
-        //cout << creature->name << " not found." << endl;
+        //remove from allCreatures
+        //allCreatures.erase(creature->name);
     }
     return found;
 }
