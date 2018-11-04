@@ -912,7 +912,7 @@ bool parseInput(string input) {
             for(int i = 0; i < allContainers["inventory"].items.size(); i++) {
                 if(allContainers["inventory"].items[i]->name == itemName) {
                     foundItem = true;
-                    cout << "You activate the " << itemName << endl;
+                    cout << "You activate the " << itemName << "." <<endl;
                     cout << allContainers["inventory"].items[i]->turnon.print << endl;
                     //parse the action
                     bool action = parseAction(allContainers["inventory"].items[i]->turnon.action);
